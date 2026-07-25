@@ -23,13 +23,26 @@ document.addEventListener('click', function () {
 
 // Secondary nav tabs: fixed, evenly-split columns that never move. Clicking a
 // tab does not reorder or translate anything — it only swaps which tab has
-// the .active class, and CSS transitions the border color/width so the single
-// continuous ink line appears to lift up and wrap around the newly active
-// tab instead of the tab travelling to the line. Navigation is delayed just
-// long enough for that line transition to read before the next page loads.
+// the .active class. Each tab gets 4 injected "stroke" spans (see .tab-stroke
+// rules in style.css) that progressively draw the ink outline around the
+// newly active tab — up both sides from the baseline, then sweeping across
+// the top to meet in the middle — instead of the border just fading in.
+// Navigation is delayed just long enough for that draw-in to finish reading
+// before the next page loads.
 (function () {
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-nav .tab'));
   if (!tabs.length) return;
+
+  // Inject the stroke spans once, up front, so they're already in their
+  // resting (undrawn) state before any click — this is what makes the
+  // outline animate in on click rather than just appearing.
+  tabs.forEach(function (tab) {
+    ['l', 'r', 'tl', 'tr'].forEach(function (pos) {
+      var s = document.createElement('span');
+      s.className = 'tab-stroke tab-stroke-' + pos;
+      tab.appendChild(s);
+    });
+  });
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -43,8 +56,8 @@ document.addEventListener('click', function () {
       tabs.forEach(function (t) { t.classList.remove('active'); });
       tab.classList.add('active');
 
-      // Let the line finish redrawing around the new tab before navigating.
-      window.setTimeout(function () { window.location.href = href; }, 380);
+      // Let the outline finish drawing around the new tab before navigating.
+      window.setTimeout(function () { window.location.href = href; }, 460);
     });
   });
 })();
