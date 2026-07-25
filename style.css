@@ -16,7 +16,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--font-serif);line
 .page{max-width:var(--max-width);margin:0 auto;padding:0 1.5rem}
 
 /* Header */
-header{border-bottom:2px solid var(--ink);padding:2.5rem 0 1rem}
+header{padding:2.5rem 0 1rem}
 .masthead-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem}
 .site-name{font-family:var(--font-serif);font-size:1.1rem;font-weight:normal;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-light)}
 .site-date{font-family:var(--font-sans);font-size:.75rem;color:var(--ink-faint);letter-spacing:.05em}
@@ -56,7 +56,7 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   border-bottom:none;
   border-radius:8px 8px 0 0;
   padding:.6rem 1.2rem .55rem;
-  transition:color .2s ease,border-color .2s ease;
+  transition:color .35s ease,border-color .35s ease,border-width .35s ease,font-weight .35s ease;
 }
 .tab:hover{color:var(--ink)}
 .tab.active{
@@ -72,6 +72,12 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   left:-2px;right:-2px;bottom:-2px;
   height:2px;
   background:var(--paper);
+  opacity:0;
+  animation:tab-mask-in .35s ease forwards;
+}
+@keyframes tab-mask-in{
+  0%,60%{opacity:0}
+  100%{opacity:1}
 }
 .nav-cta{font-family:var(--font-sans);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.35rem .85rem;border-radius:2px;white-space:nowrap;transition:opacity .15s;margin-bottom:4px}
 .nav-cta:hover{opacity:.75}
