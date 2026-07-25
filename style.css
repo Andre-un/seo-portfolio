@@ -17,9 +17,10 @@ body{background:var(--paper);color:var(--ink);font-family:var(--font-serif);line
 
 /* Header */
 header{padding:2.5rem 0 1rem}
-.masthead-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem}
+.masthead-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
 .site-name{font-family:var(--font-serif);font-size:1.1rem;font-weight:normal;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-light)}
-.site-date{font-family:var(--font-sans);font-size:.75rem;color:var(--ink-faint);letter-spacing:.05em}
+.hire-btn{display:inline-block;font-family:var(--font-sans);font-size:.85rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.6rem 1.35rem;border-radius:2px;white-space:nowrap;transition:opacity .15s;flex-shrink:0}
+.hire-btn:hover{opacity:.75}
 .masthead-title{font-family:var(--font-serif);font-size:clamp(2.2rem,6vw,3.4rem);font-weight:normal;line-height:1.1;margin:.6rem 0 .4rem}
 .masthead-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;border-top:1px solid var(--rule);padding-top:.6rem;margin-top:.6rem}
 .masthead-tagline{font-family:var(--font-sans);font-size:.82rem;color:var(--ink-light);letter-spacing:.08em;text-transform:uppercase;border-top:1px solid var(--rule);padding-top:.6rem;margin-top:.6rem}
@@ -75,8 +76,6 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   height:2px;
   background:var(--paper);
 }
-.nav-cta{font-family:var(--font-sans);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.35rem .85rem;border-radius:2px;white-space:nowrap;transition:opacity .15s;margin-bottom:4px}
-.nav-cta:hover{opacity:.75}
 
 /* Results bar (index.html) */
 .results-bar{display:flex;gap:0;border:1px solid var(--rule);margin-bottom:3rem;overflow:hidden;border-radius:2px}
@@ -217,6 +216,7 @@ footer a:hover{color:var(--ink)}
 /* Responsive */
 @media(max-width:560px){
   .masthead-title{font-size:2rem}
+  .hire-btn{font-size:.72rem;padding:.5rem 1rem}
   .tab-nav{gap:.2rem}
   .tab{padding:.5rem .4rem .45rem;font-size:.62rem;letter-spacing:.04em}
   .results-bar{flex-direction:column}
