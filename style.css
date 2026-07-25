@@ -44,11 +44,8 @@ header{padding:2.5rem 0 1rem}
    static grey hairline border; the active tab's own border turns transparent
    and its background is clipped to the padding box, so the indicator's ink
    border (sitting behind it, z-index 1 vs 2) shows through exactly where the
-   grey one used to be — no extra masking element needed for that. The
-   indicator also extends 2px past the bottom to cover the nav's own
-   baseline, and because it sits behind the tab's own opaque background,
-   that baseline segment is naturally hidden wherever a tab covers it. */
-nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
+   grey one used to be — no extra masking element needed for that. */
+nav{position:relative;padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
 .tab-nav{position:relative;list-style:none;display:flex;flex:1 1 auto;min-width:0;align-items:flex-end}
 .tab-nav li{display:flex;flex:1 1 0;min-width:0}
 .tab{
@@ -82,7 +79,7 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   flex:none;
   top:0;
   left:0;
-  bottom:-2px;
+  bottom:0;
   width:20%;
   z-index:1;
   background:var(--paper);
