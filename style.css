@@ -32,11 +32,14 @@ header{border-bottom:2px solid var(--ink);padding:2.5rem 0 1rem}
 .status{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-sans);font-size:.75rem;color:var(--ink-light);margin-top:1rem}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#4a9e6b;display:inline-block;flex-shrink:0}
 
-/* Nav — dictionary thumb-tab index */
-nav{border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
-.tab-nav{list-style:none;display:flex;flex-wrap:wrap;align-items:flex-end;gap:.3rem}
+/* Nav — secondary tab bar. Default: right-justified. Active tab jumps to the
+   left edge; the baseline rule is erased under it and the gap, so it stays
+   intact only under the still-right-justified, unselected tabs. */
+nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
+.tab-nav{list-style:none;display:flex;flex-wrap:wrap;align-items:flex-end;gap:.3rem;justify-content:flex-end}
 .tab-nav li{display:flex;transition:margin .4s cubic-bezier(.4,0,.2,1)}
 .tab-nav li:has(>.tab.active){margin-right:auto}
+.nav-line-mask{position:absolute;bottom:-1px;height:3px;background:var(--paper);pointer-events:none}
 .tab{
   position:relative;
   display:inline-block;
@@ -46,7 +49,7 @@ nav{border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:
   text-transform:uppercase;
   text-decoration:none;
   color:var(--ink-light);
-  background:var(--paper-dark);
+  background:var(--paper);
   border:1px solid var(--rule);
   border-bottom:none;
   border-radius:8px 8px 0 0;
