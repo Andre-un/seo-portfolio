@@ -23,14 +23,21 @@ document.addEventListener('click', function () {
 
 // Secondary nav tabs: default right-justified. Clicking a tab moves it to the
 // front of the list (so margin-right:auto — set in CSS via :has() — pushes it
-// flush against the left edge) while the rest stay clustered on the right.
-// Movement is horizontal only (translateX) — no vertical shift. The "cut off
-// from content" line lives on each unselected tab's own border-bottom in CSS,
-// so there's no JS masking involved.
+// flush against the left edge) while the rest stay clustered on the right, in
+// one fixed global order (matching the order every page's own HTML uses) —
+// never just "whatever order they happened to be in" on the page you clicked
+// from, so the layout never jumps again once the next page finishes loading.
+// Movement is horizontal only (translateX) — no vertical shift.
 (function () {
   var list = document.querySelector('.tab-nav');
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-nav .tab'));
   if (!list || !tabs.length) return;
+
+  var canonicalOrder = ['index.html', 'work.html', 'about.html', 'shop.html'];
+  function rank(t) {
+    var i = canonicalOrder.indexOf(t.getAttribute('href'));
+    return i === -1 ? canonicalOrder.length : i;
+  }
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -40,16 +47,21 @@ document.addEventListener('click', function () {
       e.preventDefault();
 
       var href = tab.getAttribute('href');
-      var item = tab.closest('li');
 
       // FIRST: record every tab's current horizontal position.
       var first = tabs.map(function (t) { return t.getBoundingClientRect().left; });
 
-      // Move the clicked tab's <li> to the front of the DOM — CSS then
-      // pushes it to the true left edge and shoves the rest to the right.
       tabs.forEach(function (t) { t.classList.remove('active'); });
       tab.classList.add('active');
-      list.insertBefore(item, list.firstChild);
+
+      // Rebuild the DOM order from scratch: clicked tab first, then the rest
+      // sorted by the same fixed sequence every page's own markup follows.
+      var sorted = tabs.slice().sort(function (a, b) {
+        if (a === tab) return -1;
+        if (b === tab) return 1;
+        return rank(a) - rank(b);
+      });
+      sorted.forEach(function (t) { list.appendChild(t.closest('li')); });
 
       // LAST + INVERT + PLAY: offset each tab back to where it used to be
       // on the X axis only, then release so it eases into its new spot.
