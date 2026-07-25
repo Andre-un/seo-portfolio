@@ -32,20 +32,21 @@ header{padding:2.5rem 0 1rem}
 .status{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-sans);font-size:.75rem;color:var(--ink-light);margin-top:1rem}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#4a9e6b;display:inline-block;flex-shrink:0}
 
-/* Nav — secondary tab bar. Default: right-justified. Active tab jumps to the
-   left edge and moves ONLY horizontally — no vertical shift. ONE continuous
-   ink line runs the full width of the nav (under the unselected, clustered
-   tabs). Where it reaches the active tab it is masked out and replaced by
-   that tab's own left/top/right border, so the same stroke appears to climb
-   up, over, and back down around the active tab before continuing on. */
+/* Nav — secondary tab bar. Tabs sit in fixed, evenly-split columns and NEVER
+   move — no justification, no reordering, no horizontal travel. ONE
+   continuous ink line runs the full width of the nav under every tab. Only
+   the line itself changes: on the active tab it is masked out and replaced
+   by that tab's own left/top/right border, so the same stroke appears to
+   lift up, over, and back down around whichever tab is active — the tabs
+   stay put and the line does the moving. */
 nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
-.tab-nav{list-style:none;display:flex;flex:1 1 auto;min-width:0;flex-wrap:wrap;align-items:flex-end;justify-content:flex-end}
-.tab-nav li{display:flex}
-.tab-nav li:not(:first-child){margin-left:-10px}
-.tab-nav li:has(>.tab.active){margin-right:auto}
+.tab-nav{list-style:none;display:flex;flex:1 1 auto;min-width:0;align-items:flex-end}
+.tab-nav li{display:flex;flex:1 1 0;min-width:0}
 .tab{
   position:relative;
-  display:inline-block;
+  display:block;
+  width:100%;
+  text-align:center;
   font-family:var(--font-sans);
   font-size:.76rem;
   letter-spacing:.09em;
@@ -56,10 +57,10 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   border:1px solid var(--rule);
   border-bottom:none;
   border-radius:8px 8px 4px 4px;
-  padding:.6rem 1.2rem .55rem;
-  transition:transform .4s cubic-bezier(.4,0,.2,1),color .35s ease,border-color .35s ease,border-width .35s ease;
+  padding:.6rem 1rem .55rem;
+  transition:color .35s ease,border-color .35s ease,border-width .35s ease;
 }
-.tab:hover{color:var(--ink);z-index:3}
+.tab:hover{color:var(--ink)}
 .tab.active{
   color:var(--ink);
   font-weight:700;
@@ -217,7 +218,7 @@ footer a:hover{color:var(--ink)}
 @media(max-width:560px){
   .masthead-title{font-size:2rem}
   .tab-nav{gap:.2rem}
-  .tab{padding:.5rem .8rem .45rem;font-size:.7rem}
+  .tab{padding:.5rem .4rem .45rem;font-size:.62rem;letter-spacing:.04em}
   .results-bar{flex-direction:column}
   .result{border-right:none;border-bottom:1px solid var(--rule)}
   .result:last-child{border-bottom:none}
