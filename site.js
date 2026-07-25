@@ -21,21 +21,17 @@ document.addEventListener('click', function () {
   document.querySelectorAll('[data-def].tapped').forEach(function (o) { o.classList.remove('tapped'); });
 });
 
-// Secondary nav tabs: fixed, evenly-split columns that never move. A single
-// shared .tab-indicator element (see style.css) slides between columns via
-// one CSS transform driven by the --i custom property on .tab-nav — clicking
-// a tab just updates --i and swaps .active (for text colour + hiding that
-// tab's own grey border so the indicator's ink border shows through).
-// Navigation is delayed just long enough for the slide to finish before the
-// next page loads.
+// Secondary nav tabs: fixed, evenly-split columns that never move. The
+// active tab is shown purely by text colour/weight (see .tab.active in
+// style.css) — clicking just swaps which tab has that class, waits for the
+// colour transition to read, then navigates.
 (function () {
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-nav .tab'));
-  var tabNav = document.querySelector('.tab-nav');
-  if (!tabs.length || !tabNav) return;
+  if (!tabs.length) return;
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  tabs.forEach(function (tab, index) {
+  tabs.forEach(function (tab) {
     tab.addEventListener('click', function (e) {
       if (tab.classList.contains('active') || reduceMotion) return;
       e.preventDefault();
@@ -44,10 +40,8 @@ document.addEventListener('click', function () {
 
       tabs.forEach(function (t) { t.classList.remove('active'); });
       tab.classList.add('active');
-      tabNav.style.setProperty('--i', index);
 
-      // Let the indicator finish sliding into place before navigating.
-      window.setTimeout(function () { window.location.href = href; }, 420);
+      window.setTimeout(function () { window.location.href = href; }, 200);
     });
   });
 })();
