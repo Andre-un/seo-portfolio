@@ -33,24 +33,19 @@ header{padding:2.5rem 0 1rem}
 .status{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-sans);font-size:.75rem;color:var(--ink-light);margin-top:1rem}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#4a9e6b;display:inline-block;flex-shrink:0}
 
-/* Nav — secondary tab bar. Tabs sit in 5 fixed, evenly-split columns and
-   NEVER move. Rather than animating a border on every tab (expensive,
-   clip-path-based), ONE shared element — .tab-indicator — slides between
-   columns via a single transform, which is the cheapest thing a browser can
-   animate (pure GPU compositing, no repaint). It's sized to exactly one
+/* Nav — secondary tab bar. Plain text labels in 5 fixed, evenly-split
+   columns that NEVER move — no borders, no boxes. The only thing that shows
+   which tab is active is a single shared underline (.tab-indicator) sliding
+   beneath it via one CSS transform (the cheapest thing a browser can
+   animate — pure GPU compositing, no repaint). It's sized to exactly one
    column and jumps N columns over via translateX(N * 100%), driven by the
    --i custom property set on .tab-nav (inline per page for the initial
-   position, updated in site.js on click). Each plain tab always shows a
-   static grey hairline border; the active tab's own border turns transparent
-   and its background is clipped to the padding box, so the indicator's ink
-   border (sitting behind it, z-index 1 vs 2) shows through exactly where the
-   grey one used to be — no extra masking element needed for that. */
-nav{position:relative;padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
+   position, updated in site.js on click). */
+nav{position:relative;padding:0 0 1rem;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
 .tab-nav{position:relative;list-style:none;display:flex;flex:1 1 auto;min-width:0;align-items:flex-end}
 .tab-nav li{display:flex;flex:1 1 0;min-width:0}
 .tab{
   position:relative;
-  z-index:2;
   display:block;
   width:100%;
   text-align:center;
@@ -60,11 +55,6 @@ nav{position:relative;padding:0 0 0;margin-bottom:3rem;display:flex;justify-cont
   text-transform:uppercase;
   text-decoration:none;
   color:var(--ink-light);
-  background:var(--paper);
-  background-clip:padding-box;
-  border:2px solid var(--rule);
-  border-bottom:none;
-  border-radius:8px 8px 6px 6px;
   padding:.6rem 1rem .55rem;
   transition:color .35s ease;
 }
@@ -72,20 +62,15 @@ nav{position:relative;padding:0 0 0;margin-bottom:3rem;display:flex;justify-cont
 .tab.active{
   color:var(--ink);
   font-weight:700;
-  border-color:transparent;
 }
 .tab-indicator{
   position:absolute;
   flex:none;
-  top:0;
   left:0;
   bottom:0;
   width:20%;
-  z-index:1;
-  background:var(--paper);
-  border:2px solid var(--ink);
-  border-bottom:none;
-  border-radius:8px 8px 6px 6px;
+  height:2px;
+  background:var(--ink);
   transform:translateX(calc(var(--i, 0) * 100%));
   transition:transform .38s cubic-bezier(.4,0,.2,1);
   pointer-events:none;
