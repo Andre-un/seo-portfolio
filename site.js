@@ -21,19 +21,21 @@ document.addEventListener('click', function () {
   document.querySelectorAll('[data-def].tapped').forEach(function (o) { o.classList.remove('tapped'); });
 });
 
-// Secondary nav tabs: fixed, evenly-split columns that never move. Clicking a
-// tab only swaps which tab has the .active class — the ink outline itself
-// (a ::before pseudo-element sized to sit exactly on top of the tab's own
-// resting border, see style.css) clip-path-animates in around the newly
-// active tab. Navigation is delayed just long enough for that to finish
-// reading before the next page loads.
+// Secondary nav tabs: fixed, evenly-split columns that never move. A single
+// shared .tab-indicator element (see style.css) slides between columns via
+// one CSS transform driven by the --i custom property on .tab-nav — clicking
+// a tab just updates --i and swaps .active (for text colour + hiding that
+// tab's own grey border so the indicator's ink border shows through).
+// Navigation is delayed just long enough for the slide to finish before the
+// next page loads.
 (function () {
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-nav .tab'));
-  if (!tabs.length) return;
+  var tabNav = document.querySelector('.tab-nav');
+  if (!tabs.length || !tabNav) return;
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  tabs.forEach(function (tab) {
+  tabs.forEach(function (tab, index) {
     tab.addEventListener('click', function (e) {
       if (tab.classList.contains('active') || reduceMotion) return;
       e.preventDefault();
@@ -42,9 +44,10 @@ document.addEventListener('click', function () {
 
       tabs.forEach(function (t) { t.classList.remove('active'); });
       tab.classList.add('active');
+      tabNav.style.setProperty('--i', index);
 
-      // Let the outline finish drawing around the new tab before navigating.
-      window.setTimeout(function () { window.location.href = href; }, 460);
+      // Let the indicator finish sliding into place before navigating.
+      window.setTimeout(function () { window.location.href = href; }, 420);
     });
   });
 })();
