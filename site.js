@@ -24,29 +24,13 @@ document.addEventListener('click', function () {
 // Secondary nav tabs: default right-justified. Clicking a tab moves it to the
 // front of the list (so margin-right:auto — set in CSS via :has() — pushes it
 // flush against the left edge) while the rest stay clustered on the right.
-// A masking strip erases the nav's baseline rule from the active tab through
-// the gap, so the line only ever runs under the still-unselected tabs.
+// Movement is horizontal only (translateX) — no vertical shift. The "cut off
+// from content" line lives on each unselected tab's own border-bottom in CSS,
+// so there's no JS masking involved.
 (function () {
-  var nav = document.querySelector('.tab-nav') ? document.querySelector('.tab-nav').closest('nav') : null;
   var list = document.querySelector('.tab-nav');
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-nav .tab'));
-  if (!nav || !list || !tabs.length) return;
-
-  var mask = document.createElement('div');
-  mask.className = 'nav-line-mask';
-  nav.appendChild(mask);
-
-  function updateMask() {
-    var navRect = nav.getBoundingClientRect();
-    var activeTab = list.querySelector('.tab.active');
-    if (!activeTab) { mask.style.width = '0'; return; }
-    var others = tabs.filter(function (t) { return t !== activeTab; });
-    if (!others.length) { mask.style.width = '0'; return; }
-    var clusterStart = others[0].getBoundingClientRect().left;
-    var activeRect = activeTab.getBoundingClientRect();
-    mask.style.left = (activeRect.left - navRect.left) + 'px';
-    mask.style.width = Math.max(0, clusterStart - activeRect.left) + 'px';
-  }
+  if (!list || !tabs.length) return;
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -58,8 +42,8 @@ document.addEventListener('click', function () {
       var href = tab.getAttribute('href');
       var item = tab.closest('li');
 
-      // FIRST: record every tab's current position.
-      var first = tabs.map(function (t) { return t.getBoundingClientRect(); });
+      // FIRST: record every tab's current horizontal position.
+      var first = tabs.map(function (t) { return t.getBoundingClientRect().left; });
 
       // Move the clicked tab's <li> to the front of the DOM — CSS then
       // pushes it to the true left edge and shoves the rest to the right.
@@ -67,11 +51,10 @@ document.addEventListener('click', function () {
       tab.classList.add('active');
       list.insertBefore(item, list.firstChild);
 
-      // LAST + INVERT + PLAY: offset each tab back to where it used to be,
-      // then release on the next frame so it eases into its new spot.
+      // LAST + INVERT + PLAY: offset each tab back to where it used to be
+      // on the X axis only, then release so it eases into its new spot.
       tabs.forEach(function (t, i) {
-        var last = t.getBoundingClientRect();
-        var dx = first[i].left - last.left;
+        var dx = first[i] - t.getBoundingClientRect().left;
         if (dx) {
           t.style.transition = 'none';
           t.style.transform = 'translateX(' + dx + 'px)';
@@ -81,13 +64,8 @@ document.addEventListener('click', function () {
         }
       });
 
-      updateMask();
-
       // Let the shift read before actually navigating.
       window.setTimeout(function () { window.location.href = href; }, 380);
     });
   });
-
-  updateMask();
-  window.addEventListener('resize', updateMask);
 })();

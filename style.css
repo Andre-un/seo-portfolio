@@ -33,13 +33,13 @@ header{border-bottom:2px solid var(--ink);padding:2.5rem 0 1rem}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#4a9e6b;display:inline-block;flex-shrink:0}
 
 /* Nav — secondary tab bar. Default: right-justified. Active tab jumps to the
-   left edge; the baseline rule is erased under it and the gap, so it stays
-   intact only under the still-right-justified, unselected tabs. */
-nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
+   left edge and moves ONLY horizontally — no vertical shift. Each unselected
+   tab carries its own bottom rule (cut off from the page content below);
+   the active tab has none, so it reads as open, flowing into the content. */
+nav{position:relative;border-bottom:none;padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
 .tab-nav{list-style:none;display:flex;flex:1 1 auto;min-width:0;flex-wrap:wrap;align-items:flex-end;gap:.3rem;justify-content:flex-end}
 .tab-nav li{display:flex;transition:margin .4s cubic-bezier(.4,0,.2,1)}
 .tab-nav li:has(>.tab.active){margin-right:auto}
-.nav-line-mask{position:absolute;bottom:-1px;height:3px;background:var(--paper);pointer-events:none}
 .tab{
   position:relative;
   display:inline-block;
@@ -51,11 +51,10 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   color:var(--ink-light);
   background:var(--paper);
   border:1px solid var(--rule);
-  border-bottom:none;
+  border-bottom:2px solid var(--ink);
   border-radius:8px 8px 0 0;
   padding:.6rem 1.2rem .55rem;
-  transform:translateY(5px);
-  transition:transform .4s cubic-bezier(.4,0,.2,1),color .2s ease,border-color .2s ease;
+  transition:color .2s ease,border-color .2s ease;
   overflow:hidden;
 }
 .tab:hover{color:var(--ink)}
@@ -63,7 +62,7 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   color:var(--ink);
   font-weight:700;
   border-color:var(--ink);
-  transform:translateY(0);
+  border-bottom-color:transparent;
   z-index:2;
 }
 .tab.active::before{
