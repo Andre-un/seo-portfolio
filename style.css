@@ -36,7 +36,7 @@ header{border-bottom:2px solid var(--ink);padding:2.5rem 0 1rem}
    left edge; the baseline rule is erased under it and the gap, so it stays
    intact only under the still-right-justified, unselected tabs. */
 nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
-.tab-nav{list-style:none;display:flex;flex-wrap:wrap;align-items:flex-end;gap:.3rem;justify-content:flex-end}
+.tab-nav{list-style:none;display:flex;flex:1 1 auto;min-width:0;flex-wrap:wrap;align-items:flex-end;gap:.3rem;justify-content:flex-end}
 .tab-nav li{display:flex;transition:margin .4s cubic-bezier(.4,0,.2,1)}
 .tab-nav li:has(>.tab.active){margin-right:auto}
 .nav-line-mask{position:absolute;bottom:-1px;height:3px;background:var(--paper);pointer-events:none}
