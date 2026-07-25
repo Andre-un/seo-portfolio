@@ -33,9 +33,9 @@ header{border-bottom:2px solid var(--ink);padding:2.5rem 0 1rem}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#4a9e6b;display:inline-block;flex-shrink:0}
 
 /* Nav — secondary tab bar. Default: right-justified. Active tab jumps to the
-   left edge and moves ONLY horizontally — no vertical shift. Each unselected
-   tab carries its own bottom rule (cut off from the page content below);
-   the active tab has none, so it reads as open, flowing into the content. */
+   left edge and moves ONLY horizontally — no vertical shift. A single
+   underline sits under the active tab only — that one line is what marks it
+   as selected and visually cuts it off from the unmarked, unselected tabs. */
 nav{position:relative;border-bottom:none;padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
 .tab-nav{list-style:none;display:flex;flex:1 1 auto;min-width:0;flex-wrap:wrap;align-items:flex-end;gap:.3rem;justify-content:flex-end}
 .tab-nav li{display:flex;transition:margin .4s cubic-bezier(.4,0,.2,1)}
@@ -51,7 +51,7 @@ nav{position:relative;border-bottom:none;padding:0 0 0;margin-bottom:3rem;displa
   color:var(--ink-light);
   background:var(--paper);
   border:1px solid var(--rule);
-  border-bottom:2px solid var(--ink);
+  border-bottom:2px solid transparent;
   border-radius:8px 8px 0 0;
   padding:.6rem 1.2rem .55rem;
   transition:color .2s ease,border-color .2s ease;
@@ -61,16 +61,8 @@ nav{position:relative;border-bottom:none;padding:0 0 0;margin-bottom:3rem;displa
 .tab.active{
   color:var(--ink);
   font-weight:700;
-  border-color:var(--ink);
-  border-bottom-color:transparent;
+  border-color:var(--rule) var(--rule) var(--ink);
   z-index:2;
-}
-.tab.active::before{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;
-  height:3px;
-  background:var(--ink);
 }
 .nav-cta{font-family:var(--font-sans);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.35rem .85rem;border-radius:2px;white-space:nowrap;transition:opacity .15s;margin-bottom:4px}
 .nav-cta:hover{opacity:.75}
