@@ -33,7 +33,7 @@ document.addEventListener('click', function () {
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-nav .tab'));
   if (!list || !tabs.length) return;
 
-  var canonicalOrder = ['index.html', 'work.html', 'about.html', 'shop.html'];
+  var canonicalOrder = ['index.html', 'work.html', 'knowledge.html', 'about.html', 'shop.html'];
   function rank(t) {
     var i = canonicalOrder.indexOf(t.getAttribute('href'));
     return i === -1 ? canonicalOrder.length : i;
