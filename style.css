@@ -34,8 +34,10 @@ header{padding:2.5rem 0 1rem}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#4a9e6b;display:inline-block;flex-shrink:0}
 
 /* Nav — secondary tab bar. Plain text labels in 5 fixed, evenly-split
-   columns that NEVER move — no borders, no boxes, no underline. The active
-   tab is shown purely by colour/weight (ink + bold vs light grey). */
+   columns that NEVER move. Every tab reserves a 1px transparent border
+   (so nothing shifts on click) — the active tab just turns that border
+   ink-coloured on three sides (no bottom), with rounded corners, giving a
+   single thin outline that wraps the chosen tab. */
 nav{position:relative;padding:0 0 1rem;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
 .tab-nav{position:relative;list-style:none;display:flex;flex:1 1 auto;min-width:0;align-items:flex-end}
 .tab-nav li{display:flex;flex:1 1 0;min-width:0}
@@ -51,12 +53,16 @@ nav{position:relative;padding:0 0 1rem;margin-bottom:3rem;display:flex;justify-c
   text-decoration:none;
   color:var(--ink-light);
   padding:.6rem 1rem .55rem;
-  transition:color .35s ease;
+  border:1px solid transparent;
+  border-bottom:none;
+  border-radius:8px 8px 6px 6px;
+  transition:color .35s ease,border-color .3s ease;
 }
 .tab:hover{color:var(--ink)}
 .tab.active{
   color:var(--ink);
   font-weight:700;
+  border-color:var(--ink);
 }
 
 /* Results bar (index.html) */
