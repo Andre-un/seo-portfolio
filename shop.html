@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Jędrzej Szymula</title>
+  <meta name="description" content="SEO resources, checklists and guides by Jędrzej Szymula." />
+  <link rel="canonical" href="https://portfolio-4mh.pages.dev/shop.html" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Shop — SEO Resources by Jędrzej Szymula" />
+  <meta property="og:description" content="Practical SEO checklists, frameworks, and guides built from real client work." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://portfolio-4mh.pages.dev/shop.html" />
+  <meta property="og:image" content="https://portfolio-4mh.pages.dev/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="masthead-top">
+      <span class="site-name">Jędrzej Szymula</span>
+      <span class="site-date">SEO Portfolio · Est. 2024</span>
+    </div>
+    <h1 class="masthead-title">The SEO<br>Dictionary</h1>
+    <p class="masthead-tagline">Case studies · Insights · Digital resources on search</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="work.html">Work</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="shop.html" class="active">Shop</a></li>
+    </ul>
+    <a href="mailto:j.szymula.seo@gmail.com" class="nav-cta">Work with me →</a>
+  </nav>
+
+  <main>
+
+    <div class="section-label">Resources</div>
+
+    <!-- Product 1 -->
+    <article class="product">
+      <div class="product-header">
+        <span class="product-title">SEO Audit Checklist <span class="badge">Coming soon</span></span>
+        <span class="product-price">€19</span>
+      </div>
+      <span class="product-pos">checklist · pdf</span>
+      <p class="product-desc">
+        A comprehensive, field-tested checklist for auditing any website's SEO health.
+        Covers technical, on-page, content, and off-page signals — structured so you can work through it systematically without missing anything.
+      </p>
+      <ul class="includes">
+        <li>150+ point audit framework</li>
+        <li>Priority scoring system (high / medium / low impact)</li>
+        <li>Annotated with explanations for each item</li>
+        <li>Compatible with any site type or CMS</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Technical SEO</span>
+        <span class="tag">Audit</span>
+        <span class="tag">Checklist</span>
+      </div>
+      <button class="btn btn-disabled" onclick="joinWaitlist(this)">Join waitlist</button>
+      <p class="waitlist-count" data-count="23">23 people waiting</p>
+    </article>
+
+    <!-- Product 2 -->
+    <article class="product">
+      <div class="product-header">
+        <span class="product-title">Keyword Research Framework <span class="badge">Coming soon</span></span>
+        <span class="product-price">€29</span>
+      </div>
+      <span class="product-pos">guide · spreadsheet</span>
+      <p class="product-desc">
+        A repeatable system for finding, qualifying, and prioritising keywords — built around real business goals, not just search volume.
+        Includes a pre-built spreadsheet template you can use immediately.
+      </p>
+      <ul class="includes">
+        <li>Step-by-step keyword research process</li>
+        <li>Google Sheets template with scoring model</li>
+        <li>Intent classification guide</li>
+        <li>Worked example from a real project</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Keyword Research</span>
+        <span class="tag">Strategy</span>
+        <span class="tag">Template</span>
+      </div>
+      <button class="btn btn-disabled" onclick="joinWaitlist(this)">Join waitlist</button>
+      <p class="waitlist-count" data-count="23">23 people waiting</p>
+    </article>
+
+    <!-- Product 3 -->
+    <article class="product">
+      <div class="product-header">
+        <span class="product-title">Technical SEO for Non-Developers <span class="badge">Coming soon</span></span>
+        <span class="product-price">€39</span>
+      </div>
+      <span class="product-pos">guide · pdf</span>
+      <p class="product-desc">
+        A plain-language guide to the technical side of SEO — written for marketers, founders, and content teams who need to understand and communicate technical issues without coding knowledge.
+      </p>
+      <ul class="includes">
+        <li>Core technical concepts explained clearly</li>
+        <li>How to read a crawl report</li>
+        <li>What to ask your developer (and why)</li>
+        <li>Common mistakes and how to spot them</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Technical SEO</span>
+        <span class="tag">Beginners</span>
+        <span class="tag">Guide</span>
+      </div>
+      <button class="btn btn-disabled" onclick="joinWaitlist(this)">Join waitlist</button>
+      <p class="waitlist-count" data-count="23">23 people waiting</p>
+    </article>
+
+    <!-- Email capture -->
+    <div class="notify-box">
+      <h2>Get notified when resources launch</h2>
+      <p>No spam — one email when something new drops.</p>
+      <form class="notify-form" onsubmit="handleSignup(event)">
+        <input type="email" placeholder="your@email.com" required />
+        <button type="submit" class="btn">Notify me</button>
+      </form>
+      <p id="signup-msg" style="font-family:var(--font-sans);font-size:.8rem;color:var(--ink-faint);margin-top:.6rem;display:none">✓ You're on the list.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>© <span id="cur-year">2026</span> Jędrzej Szymula</span>
+    <span>
+      <a href="mailto:j.szymula.seo@gmail.com">Contact</a>
+      &nbsp;·&nbsp;
+      <a href="https://linkedin.com/in/jedrzej-szymula" target="_blank" rel="noopener">LinkedIn</a>
+    </span>
+  </footer>
+
+</div>
+<script>
+  function handleSignup(e){
+    e.preventDefault();
+    document.getElementById('signup-msg').style.display='block';
+    e.target.reset();
+  }
+  function joinWaitlist(btn){
+    const p = btn.nextElementSibling;
+    const n = parseInt(p.dataset.count) + 1;
+    p.dataset.count = n;
+    p.textContent = n + ' people waiting';
+    btn.textContent = '✓ You\'re on the list';
+    btn.style.opacity = '.5';
+    btn.style.pointerEvents = 'none';
+  }
+</script>
+<script src="site.js"></script>
+</body>
+</html>
