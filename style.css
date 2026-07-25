@@ -39,8 +39,9 @@ header{padding:2.5rem 0 1rem}
    that tab's own left/top/right border, so the same stroke appears to climb
    up, over, and back down around the active tab before continuing on. */
 nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
-.tab-nav{list-style:none;display:flex;flex:1 1 auto;min-width:0;flex-wrap:wrap;align-items:flex-end;gap:.3rem;justify-content:flex-end}
+.tab-nav{list-style:none;display:flex;flex:1 1 auto;min-width:0;flex-wrap:wrap;align-items:flex-end;justify-content:flex-end}
 .tab-nav li{display:flex}
+.tab-nav li:not(:first-child){margin-left:-10px}
 .tab-nav li:has(>.tab.active){margin-right:auto}
 .tab{
   position:relative;
@@ -58,7 +59,7 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   padding:.6rem 1.2rem .55rem;
   transition:transform .4s cubic-bezier(.4,0,.2,1),color .35s ease,border-color .35s ease,border-width .35s ease;
 }
-.tab:hover{color:var(--ink)}
+.tab:hover{color:var(--ink);z-index:3}
 .tab.active{
   color:var(--ink);
   font-weight:700;

@@ -63,21 +63,33 @@ document.addEventListener('click', function () {
       });
       sorted.forEach(function (t) { list.appendChild(t.closest('li')); });
 
-      // LAST + INVERT + PLAY: offset each tab back to where it used to be
-      // on the X axis only, then release so it eases into its new spot.
+      // LAST + INVERT: offset each tab back to where it used to be on the X
+      // axis only, then force a single reflow before releasing.
       tabs.forEach(function (t, i) {
         var dx = first[i] - t.getBoundingClientRect().left;
-        if (dx) {
-          t.style.transition = 'none';
-          t.style.transform = 'translateX(' + dx + 'px)';
-          t.getBoundingClientRect(); // force reflow
-          t.style.transition = '';
-          t.style.transform = '';
+        t.style.transition = 'none';
+        t.style.transform = dx ? 'translateX(' + dx + 'px)' : '';
+      });
+      void list.offsetWidth; // force reflow
+
+      // PLAY: the active tab eases into place immediately; the unselected,
+      // now-overlapping tabs settle a beat later each — in the order they
+      // land — for a staggered cascade instead of one flat slide.
+      var baseTransition = 'color .35s ease,border-color .35s ease,border-width .35s ease';
+      var otherIndex = 0;
+      sorted.forEach(function (t) {
+        if (t === tab) {
+          t.style.transition = 'transform .4s cubic-bezier(.4,0,.2,1),' + baseTransition;
+        } else {
+          var delay = (0.1 + otherIndex * 0.06).toFixed(2);
+          t.style.transition = 'transform .4s cubic-bezier(.4,0,.2,1) ' + delay + 's,' + baseTransition;
+          otherIndex++;
         }
+        t.style.transform = '';
       });
 
-      // Let the shift read before actually navigating.
-      window.setTimeout(function () { window.location.href = href; }, 380);
+      // Let the cascade read before actually navigating.
+      window.setTimeout(function () { window.location.href = href; }, 620);
     });
   });
 })();
