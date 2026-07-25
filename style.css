@@ -40,7 +40,7 @@ header{padding:2.5rem 0 1rem}
    up, over, and back down around the active tab before continuing on. */
 nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
 .tab-nav{list-style:none;display:flex;flex:1 1 auto;min-width:0;flex-wrap:wrap;align-items:flex-end;gap:.3rem;justify-content:flex-end}
-.tab-nav li{display:flex;transition:margin .4s cubic-bezier(.4,0,.2,1)}
+.tab-nav li{display:flex}
 .tab-nav li:has(>.tab.active){margin-right:auto}
 .tab{
   position:relative;
@@ -54,9 +54,9 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
   background:var(--paper);
   border:1px solid var(--rule);
   border-bottom:none;
-  border-radius:8px 8px 0 0;
+  border-radius:8px 8px 4px 4px;
   padding:.6rem 1.2rem .55rem;
-  transition:color .35s ease,border-color .35s ease,border-width .35s ease,font-weight .35s ease;
+  transition:transform .4s cubic-bezier(.4,0,.2,1),color .35s ease,border-color .35s ease,border-width .35s ease;
 }
 .tab:hover{color:var(--ink)}
 .tab.active{
@@ -69,15 +69,9 @@ nav{position:relative;border-bottom:2px solid var(--ink);padding:0 0 0;margin-bo
 .tab.active::after{
   content:'';
   position:absolute;
-  left:-2px;right:-2px;bottom:-2px;
+  left:2px;right:2px;bottom:-2px;
   height:2px;
   background:var(--paper);
-  opacity:0;
-  animation:tab-mask-in .35s ease forwards;
-}
-@keyframes tab-mask-in{
-  0%,60%{opacity:0}
-  100%{opacity:1}
 }
 .nav-cta{font-family:var(--font-sans);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.35rem .85rem;border-radius:2px;white-space:nowrap;transition:opacity .15s;margin-bottom:4px}
 .nav-cta:hover{opacity:.75}
