@@ -11,6 +11,15 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-12 — Globe markers never overlap
+
+- New tags never spawn on top of the city marker.
+- Every frame, `resolveOverlaps()` in `public/globe.js` checks the real on-screen boxes (+8px gap) of the
+  city marker and all tags: a tag that runs into the city or into another tag disappears at once
+  (the newer one goes first). A tag under the cursor wins — then the city marker hides instead.
+- Stress-tested (a tag every 1.5 s, 40 s, desktop + phone): 0 overlapping frames out of 800.
+
 ## 2026-11-12 — One-line header bar
 
 - The big two-line masthead is replaced by a header bar: "The SEO Playbook" logo on the far left,
