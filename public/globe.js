@@ -17,7 +17,8 @@
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var DEG = Math.PI / 180;
-  var TILT = 18 * DEG;            // latitude at the centre of the view
+  var TILT = 4 * DEG;             // latitude at the centre of the view (low = pole sits on the horizon)
+  var MAX_LAT = 66;               // nothing is drawn above the Arctic Circle (or below the Antarctic one)
   var SPEED = 6 * DEG;            // degrees of rotation per second at full speed
   var SLOW = 0.3;                 // speed factor while a topic is hovered/open
   var speedFactor = 1, speedTarget = 1;
@@ -68,7 +69,7 @@
     }
     var step = mask ? 1.25 : 3.2;  // denser on land; sparse uniform sphere as fallback
     dots = [];
-    for (var lat = -84; lat <= 84; lat += step) {
+    for (var lat = -MAX_LAT; lat <= MAX_LAT; lat += step) {
       var lonStep = step / Math.max(Math.cos(lat * DEG), 0.15);
       for (var lon = -180; lon < 180; lon += lonStep) {
         if (mask) {
@@ -184,9 +185,9 @@
     ctx.strokeStyle = RULE; ctx.lineWidth = .8;
     var lon, lat, line;
     for (lon = -180; lon < 180; lon += 15) {
-      line = []; for (lat = -90; lat <= 90; lat += 3) line.push([lon * DEG, lat * DEG]); drawLine(line);
+      line = []; for (lat = -MAX_LAT; lat <= MAX_LAT; lat += 3) line.push([lon * DEG, lat * DEG]); drawLine(line);
     }
-    for (lat = -75; lat <= 75; lat += 15) {
+    for (lat = -60; lat <= 60; lat += 15) {
       line = []; for (lon = -180; lon <= 180; lon += 3) line.push([lon * DEG, lat * DEG]); drawLine(line);
     }
 
