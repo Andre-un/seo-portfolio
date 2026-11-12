@@ -1,0 +1,111 @@
+---
+// Shared layout for every page: <head> (SEO + social tags + JSON-LD),
+// masthead, tab navigation and footer. Pages only supply their <main> content.
+//
+// Slots:
+//   default   – the page content (goes inside <main>)
+//   "before"  – elements placed before .page (e.g. the globe canvas)
+//   "scripts" – page-specific <script is:inline> tags at the end of <body>
+import '../styles/global.css';
+
+const SITE_URL = 'https://portfolio-4mh.pages.dev';
+const EMAIL = 'j.szymula.seo@gmail.com';
+const LINKEDIN = 'https://linkedin.com/in/jedrzej-szymula';
+
+const {
+  title,
+  description,
+  path = '/',
+  ogTitle = title,
+  ogDescription = description,
+  active = '',
+  homeHref = 'index.html',
+  robots = 'index, follow',
+  bodyClass,
+} = Astro.props;
+
+const canonical = SITE_URL + path;
+const ogImage = SITE_URL + '/og-image.png';
+const mailto = 'mailto:' + EMAIL;
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Jędrzej Szymula',
+  jobTitle: 'Content & SEO Specialist',
+  email: EMAIL,
+  url: SITE_URL,
+  sameAs: [LINKEDIN],
+  knowsAbout: ['SEO', 'AEO', 'GEO', 'Content Strategy', 'B2B Content', 'Technical SEO', 'Healthcare RCM'],
+};
+const ldJson = JSON.stringify(personLd);
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content={robots} />
+  <link rel="canonical" href={canonical} />
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <meta property="og:title" content={ogTitle} />
+  <meta property="og:description" content={ogDescription} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json" is:inline set:html={ldJson}></script>
+</head>
+<body class={bodyClass}>
+
+<slot name="before" />
+
+<div class="page">
+
+  <header>
+    <div class="masthead-top">
+      <span class="site-name">Jędrzej Szymula</span>
+      <a href={mailto} class="hire-btn">Hire me →</a>
+    </div>
+    <h1 class="masthead-title">The SEO<br>Dictionary</h1>
+    <div class="masthead-bottom">
+      <span class="avail"><span class="avail-dot"></span>Available for new projects</span>
+    </div>
+  </header>
+
+  <nav>
+    <ul class="tab-nav">
+      <li><a href={homeHref} class={active === 'home' ? 'tab active' : 'tab'}>Home</a></li>
+      <li><a href="work.html" class={active === 'work' ? 'tab active' : 'tab'}>Resources</a></li>
+      <li><a href="knowledge.html" class={active === 'knowledge' ? 'tab active' : 'tab'}>Knowledge</a></li>
+      <li><a href="about.html" class={active === 'about' ? 'tab active' : 'tab'}>About Me</a></li>
+      <li><a href="shop.html" class={active === 'shop' ? 'tab active' : 'tab'}>Shop</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer>
+    <span>© <span id="cur-year">2026</span> Jędrzej Szymula</span>
+    <span>
+      <a href={mailto}>Contact</a>
+      &nbsp;·&nbsp;
+      <a href={LINKEDIN} target="_blank" rel="noopener">LinkedIn</a>
+    </span>
+  </footer>
+
+</div>
+
+<slot name="scripts" />
+<script is:inline src="site.js"></script>
+</body>
+</html>

@@ -1,47 +1,79 @@
 # The SEO Dictionary — Jędrzej Szymula
 
-Personal SEO portfolio site. Static HTML/CSS/JS, no build step, no framework — hosted for free on Cloudflare Pages.
+Personal portfolio: case studies, knowledge entries and (soon) digital products.
+Built with [Astro](https://astro.build) and hosted for free on Cloudflare Pages.
 
 Live: https://portfolio-4mh.pages.dev
+
+## Why Astro
+
+Every page shares one layout (`src/layouts/Base.astro`): `<head>` with SEO and social
+tags, JSON-LD, the masthead, the tab menu and the footer. Change the menu or the footer
+once and every page follows. The output is still plain static HTML + one CSS file —
+no JavaScript framework is shipped to visitors.
 
 ## Structure
 
 ```
-index.html        Home
-work.html          Case studies + work history
-about.html         Bio, expertise, experience timeline
-shop.html          Digital products (checklists, guides) — currently waitlist-only
-style.css          Shared stylesheet used by all pages
-site.js            Shared behaviour (footer year, tooltip touch support)
-favicon.svg        Favicon (modern browsers)
-favicon-32.png     Favicon fallback (PNG)
-apple-touch-icon.png  iOS home-screen icon
-og-image.png       Social share preview image (1200×630)
-robots.txt         Crawler rules
-sitemap.xml        Sitemap for search engines
-images/            Case study screenshots (currently placeholders, see TODO below)
+src/
+  layouts/Base.astro   Shared layout (head, masthead, nav, footer, JSON-LD)
+  pages/*.astro        One file per page → built to /<name>.html (old URLs kept)
+    index.astro          Home
+    work.astro           Case studies, earlier work, free checklists
+    knowledge.astro      SEO / AEO / GEO entries (#seo, #aeo, #geo)
+    about.astro          Bio, expertise, full experience timeline
+    shop.astro           Upcoming products (waitlist by email)
+    home-globe.astro     Draft homepage with the rotating globe (noindex)
+  styles/global.css    The only stylesheet — no inline style="" in pages
+public/                Copied as-is to the site root
+  images/              Case-study screenshots and report previews
+  downloads/           PDFs: Flobotics report + 3 free SEO checklists
+  globe.js, site.js    Small vanilla scripts
+  _headers             Cloudflare security + caching headers
+  robots.txt, sitemap.xml, favicons, og-image.png
 ```
 
-## Adding a new page
+## Working on it
 
-1. Copy an existing page (e.g. `about.html`) as a starting point.
-2. Keep the `<link rel="stylesheet" href="style.css" />` and `<script src="site.js"></script>` includes.
-3. Update `<title>`, `<meta name="description">`, `<link rel="canonical">`, and the `og:*` tags.
-4. Add the page to the `<nav>` list on all other pages.
-5. Add the new URL to `sitemap.xml`.
+```
+npm install
+npm run dev       # http://localhost:4321
+npm run build     # outputs dist/
+```
 
-## Styling
+### Add a page
+1. Copy `src/pages/knowledge.astro` to `src/pages/new-page.astro`.
+2. Set `title`, `description`, `path="/new-page.html"` and `active` on `<Base>`.
+3. Add it to the menu in `src/layouts/Base.astro` (if it belongs there) and to `public/sitemap.xml`.
 
-All CSS lives in `style.css`. Don't add `<style>` blocks back into individual pages — if a page needs a new component, add the class to `style.css` with a comment noting which page(s) use it.
+### Add a case study
+Copy one `<div class="case" id="…">` block in `src/pages/work.astro`, put screenshots
+in `public/images/` and reference them as `images/<file>`.
 
-## Deployment
+## Deploy on Cloudflare Pages (free)
 
-This repo is connected to Cloudflare Pages. Pushing to `main` triggers an automatic build and deploy — no manual upload needed. Cloudflare serves the files as-is (no build command required for a static site like this).
+Cloudflare dashboard → Workers & Pages → `portfolio` → Settings → Build:
 
-## Known gaps / next steps
+| Setting | Value |
+|---|---|
+| Framework preset | Astro |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Node version | 22 (read from `.node-version`) |
 
-- **Screenshots**: `work.html` currently shows "Screenshot pending" placeholders where real GSC/Ahrefs screenshots should go. Drop the images into `images/` and swap the `.shot-placeholder` div for an `<img>` tag (see the `TODO` comments in `work.html`).
-- **Forms**: the email signup (`index.html`, `shop.html`) and waitlist buttons (`shop.html`) are client-side only right now — nothing is actually captured or stored. Wire them up to a form backend (e.g. Formspree, Buttondown) before relying on them.
-- **Shop**: no payment processing yet. When ready to sell, Gumroad or Lemon Squeezy are the simplest zero-setup-cost options (pay-per-sale, no monthly fee).
-- **Analytics**: none installed. Cloudflare Web Analytics (free, privacy-friendly, toggle on in the Cloudflare Pages dashboard) is the simplest zero-cost option.
-- **Testimonial**: the quote on `index.html` is still a placeholder (`— Client name, Company`). Replace with a real quote when available.
+Connect this GitHub repository; every push to `main` then builds and deploys
+automatically, and other branches get preview URLs. GitHub Actions
+(`.github/workflows/build.yml`) also builds every push, so a broken change shows up
+as a red ✗ on GitHub before it reaches the site.
+
+## Moving to your own domain
+Update the URL in four places: `astro.config.mjs` (`site`), `src/layouts/Base.astro`
+(`SITE_URL`), `public/robots.txt` and `public/sitemap.xml`.
+
+## Next steps
+- Email capture: links currently open an email to `j.szymula.seo@gmail.com`. For a real
+  signup form use a free form backend (Formspree, Buttondown) and swap the links.
+- Shop payments: Gumroad or Lemon Squeezy (no monthly fee).
+- Analytics: Cloudflare Web Analytics (free toggle in the Pages dashboard).
+- Content collections: move Knowledge entries and case studies to Markdown files
+  once there are more of them.

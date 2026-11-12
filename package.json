@@ -1,0 +1,18 @@
+{
+  "name": "seo-dictionary",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The SEO Dictionary — personal portfolio of Jędrzej Szymula, built with Astro and hosted on Cloudflare Pages.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.12.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
