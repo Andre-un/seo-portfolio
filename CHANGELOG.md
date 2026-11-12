@@ -7,11 +7,18 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
-## 2026-11-12 — Globe tilted, no Arctic
 
-- View tilt lowered from 18° to 4° (`TILT` in `public/globe.js`), so the North Pole sits on the horizon.
-- Nothing is drawn above 66° (`MAX_LAT`): no Arctic land dots, meridians stop there and parallels run
-  up to 60°, so the grid no longer converges into a visible pole.
+## 2026-11-12 — Globe: static cities, pulsing topic tags
+
+- City markers are static dots; the name sits on a paper-coloured label at full opacity, in its own
+  DOM layer (`.globe-places`) above the canvas so the bottom fade mask doesn't dim it.
+- Cities switch instantly just before the arc lands (no cross-fade, no landing ring).
+- The pulse moved to the dots under the topic tags (SEO, AEO, GEO, AI, B2B): `.gtag-dot::after`.
+
+## 2026-11-12 — Globe tilted towards the equator
+
+- View tilt lowered from 18° to 4° (`TILT` in `public/globe.js`) to show a different part of the globe.
+  (A short-lived version also hid everything above 66°; the full globe incl. the Arctic is drawn again.)
 
 ## 2026-11-12 — Globe: one place at a time, hopping arc
 
