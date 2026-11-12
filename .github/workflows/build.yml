@@ -1,0 +1,27 @@
+# Free build check on GitHub: every push / pull request must build cleanly
+# before Cloudflare Pages deploys it.
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm run build
+      - name: Check that every page and file made it into dist/
+        run: |
+          for f in index.html work.html knowledge.html about.html shop.html home-globe.html \
+                   sitemap.xml robots.txt _headers site.js globe.js \
+                   downloads/flobotics-state-of-rcm-automation-2026.pdf \
+                   downloads/on-page-seo-checklist.pdf downloads/off-page-seo-checklist.pdf \
+                   downloads/technical-seo-checklist.pdf; do
+            test -f "dist/$f" || { echo "Missing dist/$f"; exit 1; }
+          done

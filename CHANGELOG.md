@@ -1,0 +1,81 @@
+# Changelog / Work Log
+
+Running history of changes made to this site, kept so future sessions have context without re-discovering everything from scratch.
+
+
+## 2026-11-12 — Migration to Astro
+
+- Site rebuilt as an Astro project (static output, same look, same URLs via `build.format: 'file'`).
+  One shared layout `src/layouts/Base.astro` replaces the header/nav/footer copied into every page.
+- All inline `style=""` attributes moved into `src/styles/global.css` as classes.
+- All images now live in the repo: the 4 Autopay / winiety-online screenshots (previously hot-linked
+  from old Cloudflare preview deployments) are in `public/images/`.
+- The 3 free checklists (previously 404 in the local folder) are in `public/downloads/`.
+- Removed before launch: placeholder testimonial on the homepage, hard-coded "23 people waiting"
+  counters in the shop, and signup forms that showed "You're on the list" without saving anything.
+  Replaced with honest mailto links ("Email me to get notified", "Join the waitlist by email").
+- JSON-LD Person schema now on every page, updated to "Content & SEO Specialist" with AEO/GEO/B2B.
+- Sitemap now lists Knowledge. Added Cloudflare `_headers` (security + long cache for `/_astro/*`).
+- Added GitHub Actions build check.
+
+## 2026-11-02 — Draft globe homepage
+
+- New `home-globe.html` (draft, `noindex`, not in nav or sitemap): dictionary-entry hero ("Jędrzej Szymula, noun") on the right, big rotating dotted globe in the bottom-left quarter with a bottom fade, Warsaw → Indiana route. Below the fold: Case Studies, SEO·AEO·GEO and Resources teasers.
+- Globe pop-up tags: SEO, AEO, GEO, AI, B2B (B2B weighted ×2) appear pinned to land dots, rotate with the globe, glitch in/out (RGB-split slices, CSS only) — `.globe-tags` / `.gtag*` in `style.css`, logic in `globe.js`. Static and calm with reduced motion.
+- Tuning (v4): rotation 6°/s (was 4), hover slow-down to 30% (was 10%), a new tag every 7 s (was 30).
+- Tag timing (v3): one new tag every 30 s (`SPAWN_EVERY` in `globe.js`); tags no longer time out — they ride the globe, shrink towards the horizon and glitch out only once they go over it. Leaving a hovered tag brings the globe back to full speed straight away (~1 s ease), even while the topic panel is still open.
+- Topic hover: hovering (or tapping/focusing) a globe tag slows the globe to 10% and swaps the entry panel, with a glitch, to that topic — title, expansion, intro and two buttons (Learn more + Hire me / Consult me). Topic copy lives in `.g-topics` inside `home-globe.html`. The panel stays open while the cursor is in it, and returns to the default entry ~2s after leaving (Esc closes). Tags never spawn under the panel. `knowledge.html` entries got ids `#seo`, `#aeo`, `#geo` for deep links. On phones the tags stay decorative.
+- New `globe.js`: canvas globe, land dots from world-atlas via jsDelivr (d3-geo + topojson-client); falls back to a plain dotted sphere if the CDN fails; respects reduced-motion; pauses when off screen.
+- `style.css`: globe-page classes (`.globe-canvas`, `.g-*`) and a narrow-phone nav fix for all pages (tabs no longer run together under 480px).
+- To make it the real homepage later: rename to `index.html` (keep the old one as backup), remove the `noindex` meta, and point the Home tab to `index.html`.
+
+## 2026-11-02 — Flobotics report + full LinkedIn skills
+
+- Added `downloads/flobotics-state-of-rcm-automation-2026.pdf` (Flobotics "State of RCM Automation: 2026 Edition", CC BY 4.0; photos and logo excluded from the licence) and previews `images/flobotics-rcm-2026-{cover,p2,p12}.jpg`.
+- `work.html`: Flobotics case now contains a featured-report block (cover, key numbers, my contribution, evidence grades, download button, two page previews). New `.report*` / `.grade*` classes in `style.css`. `toggle()` now ignores clicks inside an open case body so links/downloads don't collapse it.
+- `about.html`: every role now shows its full LinkedIn skill list (translated to English); Profisun Polska (2020) added; Flobotics description updated; Fintek title in English.
+
+## 2026-10-29 — Case studies from LinkedIn experience
+
+- `work.html`: Flobotics updated (2× U.S. blog growth YoY, 40 AI citations in 3 months, featured "U.S. RCM: 2026 Review", GitHub deploy). Autopay dated 2024–2026 and credited to the Mamalu.io Content Team Lead role. winiety-online.pl got LinkedIn metrics (1,000+ TOP 3 keywords, +250% visibility, $125K+ content-driven purchases). New Milo Solutions case. New "Earlier Work" section (BimmerTech, Rightout, Finelf, Fintek, freelance, Profisun) using `.results-list` / `.dt-meta` in `style.css`. Each case now has an id for deep links.
+- `index.html`: Milo Solutions teaser added; teasers deep-link to their case.
+- `about.html`: Mamalu.io Content Team Lead now dated 2024 — 2026.
+
+## 2026-10-29 — Flobotics case study
+
+- `work.html`: added Flobotics (healthcare RCM rebrand & pivot) as the first case study, with id `#flobotics`. Results shown as a grouped list (Content / Social media / Branding / Optimisation) using new `.results` classes in `style.css`. Updated og:description.
+- `index.html`: added Flobotics teaser card to the Case Studies grid, linking to `work.html#flobotics`.
+- `sitemap.xml`: bumped lastmod for `/` and `work.html`.
+- No screenshots for this case yet — add GSC/Ahrefs/LinkedIn analytics images as `<figure>` blocks like the Autopay case when available.
+
+## 2026-07-25 — Code cleanup + infra investigation
+
+### Code changes (done, files updated on disk)
+- Extracted duplicated inline `<style>` blocks (present in all 4 pages) into a single shared `style.css`. All pages now use `<link rel="stylesheet" href="style.css" />`.
+- Created `site.js` (shared JS): makes the footer copyright year update automatically (`#cur-year` span), and makes `[data-def]` tooltips in `index.html` usable via keyboard focus and touch tap (previously hover-only).
+- Added `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` (generated, simple "§" mark on dark square, matches site's ink/paper palette). Linked in all 4 pages' `<head>`.
+- Generated `og-image.png` (1200×630, matches site's editorial/dictionary look) and added `og:image` + `twitter:card` meta tags to all 4 pages.
+- Added `robots.txt` and `sitemap.xml` at project root.
+- Added `<link rel="canonical">` to all 4 pages.
+- `work.html`: the 4 case-study screenshots (`images/screen-mobilityautopayeu-1`, `screenshot-mobilityautopayeu-5.png`, `-2.png`, `-4.png`) were referenced but the actual image files were missing from the local project folder → replaced with a styled "Screenshot pending" placeholder (`.shot-placeholder` class) and `<!-- TODO -->` comments so it's easy to swap back in once real screenshots are available. **Note:** Cloudflare deployment history shows these images DID exist at some point (deployment log has entries like "Rename screen-mobilityautopayeu-6 to screen-mobilityautopayeu-6.png") — they may still exist in the `JSzymula/WWW` GitHub repo or an earlier Cloudflare deployment; worth checking there before re-shooting screenshots.
+- Left the testimonial placeholder on `index.html` ("— Client name, Company · add yours here") as-is per explicit user decision — not a bug, intentionally untouched until a real quote is available.
+- Footer year changed from hardcoded "© 2024" to "© <span id=cur-year>2026</span>" (auto-updates via site.js).
+- Wrote `README.md` (project structure, how to add a page, how styling works, known gaps) and `.gitignore` (.DS_Store, Thumbs.db).
+
+### Infra / hosting — what we learned (important context)
+- The live site (**https://portfolio-4mh.pages.dev**) is a Cloudflare Pages project named `portfolio`, under Cloudflare account `Jedrzejszymula@gmail.com`.
+- Discovered mid-session: this Cloudflare Pages project was **already connected to a GitHub repo** — `JSzymula/WWW` — with automatic deploy-on-push enabled, and has been for ~3 months. This was not known at the start of the session; a *separate*, unnecessary new repo (`Andre-un/seo-portfolio`) was created before this was discovered. `JSzymula` is a different, likely older/primary GitHub account than `Andre-un` (which was freshly created during this session).
+- We disconnected the `JSzymula/WWW` git integration in Cloudflare Pages settings, intending to reconnect it to `Andre-un/seo-portfolio` instead. The reconnect flow required GitHub OAuth in a popup window that our browser-automation tooling couldn't reach/control. After the popup, the Cloudflare settings page showed `JSzymula/WWW` connected again — **current actual git-connection state in Cloudflare Settings → Build → Git repository is unconfirmed as of end of session.** Check this directly before assuming either way.
+- Given the friction with the two-GitHub-account situation, the user decided to bypass GitHub entirely for deploys and instead use Cloudflare Pages' **Direct Upload** feature (Workers & Pages → portfolio → "Create deployment" → drag in files → Save and deploy). This does NOT go through git at all — it's a manual, one-off upload.
+- A Direct Upload of the updated files (12 files: index.html, work.html, about.html, shop.html, style.css, site.js, favicon.svg, favicon-32.png, apple-touch-icon.png, og-image.png, robots.txt, sitemap.xml) was performed via browser automation and Cloudflare reported "Success! Your site was built and deployed." **However, a post-deploy check of `https://portfolio-4mh.pages.dev/style.css` still returned the old `index.html` content (HTML, not CSS) instead of the actual stylesheet** — meaning the new files may not actually be live, or there's a routing issue (possibly a leftover `_redirects` catch-all rule serving `index.html` for all unmatched/all paths — unconfirmed, not investigated further per user request to stop debugging mid-session).
+- **Action needed next session:** before doing anything else, check `https://portfolio-4mh.pages.dev/style.css` in a real browser (not a text fetch) to see if it now loads correctly (CDN propagation can lag; the user will check visually). If it's still broken, check for a `_redirects` file in whatever is actually deployed, and check Cloudflare Pages → portfolio → Settings → Build → Git repository to see the real current connection state.
+- GitHub repo `Andre-un/seo-portfolio` (https://github.com/Andre-un/seo-portfolio) exists with one commit containing the updated files (14 files, uploaded via GitHub's web upload UI, not real git). It is currently **not** connected to any Cloudflare deploy. Decide whether to keep, connect, or delete this repo — it may now be redundant given Direct Upload is the chosen path.
+
+### Known open items (see also README.md "Known gaps")
+- Confirm whether the Direct Upload actually updated the live site (style.css / favicon / robots.txt should all resolve, footer should show dynamic year).
+- Decide fate of `Andre-un/seo-portfolio` repo (keep as backup / connect / delete).
+- Confirm actual current Git connection state of the Cloudflare Pages project.
+- Real screenshots for `work.html` case studies still needed (see TODO comments in that file) — may already exist in `JSzymula/WWW` repo history.
+- Forms (email signup, waitlist) are still not wired to any backend.
+- No analytics installed yet.
+- No payment processing for the shop yet.
