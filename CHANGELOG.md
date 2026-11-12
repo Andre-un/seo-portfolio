@@ -4,6 +4,14 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-12 — Recommendations + more places on the globe
+
+- New `src/components/Recommendations.astro`: two LinkedIn recommendations (Maciej Robak, direct manager;
+  Agnieszka Cabel, direct report — translated from Polish), shown on the homepage and on About.
+- Globe: added Brussels and Riyadh; dashed routes now run from Warsaw to every other place
+  (`places` in `public/globe.js`, first entry is the hub).
+
 ## 2026-11-12 — Globe homepage is the homepage
 
 - `src/pages/index.astro` is now the rotating-globe homepage (indexable, own OG title/description).

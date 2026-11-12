@@ -25,9 +25,13 @@
 
   var W = 0, H = 0, R = 0, CX = 0, CY = 0, DPR = 1;
   var dots = [];                  // [lonRad, latRad]
+  // First place is the hub: a dashed route is drawn from it to every other place.
+  // labelLeft: put the label on the left of the marker (avoids clashes with neighbours).
   var places = [
     { name: 'WARSAW', lon: 21.01, lat: 52.23 },
-    { name: 'INDIANA, U.S.', lon: -86.16, lat: 39.77 }
+    { name: 'INDIANA, U.S.', lon: -86.16, lat: 39.77 },
+    { name: 'BRUSSELS', lon: 4.35, lat: 50.85, labelLeft: true },
+    { name: 'RIYADH', lon: 46.68, lat: 24.71 }
   ];
 
   function isWide() { return W >= 760; }
@@ -100,7 +104,9 @@
     }
     return out;
   }
-  var route = greatCircle([places[0].lon * DEG, places[0].lat * DEG], [places[1].lon * DEG, places[1].lat * DEG], 80);
+  var routes = places.slice(1).map(function (pl) {
+    return greatCircle([places[0].lon * DEG, places[0].lat * DEG], [pl.lon * DEG, pl.lat * DEG], 80);
+  });
 
   function draw(t) {
     ctx.clearRect(0, 0, W, H);
@@ -129,15 +135,19 @@
     ctx.globalAlpha = 1;
 
     ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2; ctx.strokeStyle = INK;
-    ctx.beginPath(); var pen = false;
-    for (var j = 0; j < route.length; j++) {
-      project(route[j][0], route[j][1], p);
-      if (p.z > 0) {
-        var x = CX + (p.x - CX) * route[j][2], y = CY + (p.y - CY) * route[j][2];
-        if (pen) ctx.lineTo(x, y); else ctx.moveTo(x, y); pen = true;
-      } else pen = false;
+    for (var rr = 0; rr < routes.length; rr++) {
+      var route = routes[rr];
+      ctx.beginPath(); var pen = false;
+      for (var j = 0; j < route.length; j++) {
+        project(route[j][0], route[j][1], p);
+        if (p.z > 0) {
+          var x = CX + (p.x - CX) * route[j][2], y = CY + (p.y - CY) * route[j][2];
+          if (pen) ctx.lineTo(x, y); else ctx.moveTo(x, y); pen = true;
+        } else pen = false;
+      }
+      ctx.stroke();
     }
-    ctx.stroke(); ctx.setLineDash([]);
+    ctx.setLineDash([]);
 
     var pulse = reduceMotion ? 0 : (t / 1600) % 1;
     ctx.font = '600 10.5px "Helvetica Neue", Arial, sans-serif';
@@ -150,7 +160,8 @@
       ctx.globalAlpha = q.z * (1 - pulse);
       ctx.beginPath(); ctx.arc(q.x, q.y, 4 + pulse * 14, 0, Math.PI * 2); ctx.stroke();
       ctx.globalAlpha = q.z;
-      ctx.fillText(places[k].name, q.x + 9, q.y - 7);
+      if (places[k].labelLeft) { ctx.textAlign = 'right'; ctx.fillText(places[k].name, q.x - 9, q.y - 7); ctx.textAlign = 'left'; }
+      else ctx.fillText(places[k].name, q.x + 9, q.y - 7);
     }
     ctx.globalAlpha = 1;
   }
