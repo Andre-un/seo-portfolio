@@ -358,3 +358,16 @@ footer a:hover{color:var(--ink)}
 .shot figcaption{font-family:var(--font-sans);font-size:.72rem;color:var(--ink-faint);margin-top:.4rem}
 .notify-box .btn{margin-top:.4rem}                                          /* shop */
 .product .tags + .btn{margin-top:1rem}                                      /* shop: waitlist link */
+
+/* ==========================================================================
+   Recommendations (src/components/Recommendations.astro — index, about)
+   ========================================================================== */
+.recs .entry-word{font-weight:normal}
+.recs-intro{color:var(--ink-light)}
+.rec{margin:1.6rem 0 0;padding:1.2rem 0 0 1.2rem;border-left:2px solid var(--ink)}
+.rec blockquote p{font-size:1rem;line-height:1.75;font-style:italic;margin-bottom:.7rem}
+.rec blockquote p:first-child::before{content:'“';font-family:var(--font-serif);font-size:2.2rem;line-height:0;vertical-align:-.45em;margin-right:.15rem;color:var(--ink-faint);font-style:normal}
+.rec figcaption{display:flex;flex-direction:column;gap:.15rem;margin-top:.4rem}
+.rec-name{font-family:var(--font-serif);font-size:1.02rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);align-self:flex-start}
+.rec-name:hover{border-bottom-color:var(--ink)}
+.rec-meta{font-family:var(--font-sans);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-light)}
