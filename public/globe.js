@@ -17,8 +17,7 @@
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var DEG = Math.PI / 180;
-  var TILT = 4 * DEG;             // latitude at the centre of the view (low = pole sits on the horizon)
-  var MAX_LAT = 66;               // nothing is drawn above the Arctic Circle (or below the Antarctic one)
+  var TILT = 4 * DEG;             // latitude at the centre of the view
   var SPEED = 6 * DEG;            // degrees of rotation per second at full speed
   var SLOW = 0.3;                 // speed factor while a topic is hovered/open
   var speedFactor = 1, speedTarget = 1;
@@ -69,7 +68,7 @@
     }
     var step = mask ? 1.25 : 3.2;  // denser on land; sparse uniform sphere as fallback
     dots = [];
-    for (var lat = -MAX_LAT; lat <= MAX_LAT; lat += step) {
+    for (var lat = -84; lat <= 84; lat += step) {
       var lonStep = step / Math.max(Math.cos(lat * DEG), 0.15);
       for (var lon = -180; lon < 180; lon += lonStep) {
         if (mask) {
@@ -155,25 +154,26 @@
     }
     ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
   }
-  function drawPlace(i, alpha, t, burst) {
+  // City marker lives in its own DOM layer above the canvas: the canvas has a fade mask
+  // at the bottom, and the city name must stay fully opaque on top of the globe's dots.
+  var placeLayer = document.createElement('div');
+  placeLayer.className = 'globe-places'; placeLayer.setAttribute('aria-hidden', 'true');
+  var placeEl = document.createElement('div'); placeEl.className = 'gplace';
+  placeEl.innerHTML = '<span class="gplace-dot"></span><span class="gplace-name"></span>';
+  placeLayer.appendChild(placeEl); canvas.parentNode.insertBefore(placeLayer, canvas.nextSibling);
+  var placeName = placeEl.lastChild, shownPlace = -1;
+  function drawPlace(i) {                               // static dot + opaque label
     project(places[i].lon * DEG, places[i].lat * DEG, q);
-    if (q.z <= 0.05 || alpha <= 0) return;
-    var a = alpha * Math.min(1, q.z * 1.6);
-    var pulse = reduceMotion ? 0 : (t / 1600) % 1;
-    ctx.globalAlpha = a; ctx.fillStyle = INK; ctx.strokeStyle = INK; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(q.x, q.y, 3.2, 0, Math.PI * 2); ctx.fill();
-    ctx.globalAlpha = a * (1 - pulse);
-    ctx.beginPath(); ctx.arc(q.x, q.y, 4 + pulse * 14, 0, Math.PI * 2); ctx.stroke();
-    if (burst > 0 && burst < 1) {                        // landing ring
-      ctx.globalAlpha = a * (1 - burst); ctx.lineWidth = 1.4;
-      ctx.beginPath(); ctx.arc(q.x, q.y, 4 + burst * 26, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1;
+    if (q.z <= 0.05) { placeEl.style.display = 'none'; return; }
+    if (shownPlace !== i) {
+      shownPlace = i; placeName.textContent = places[i].name;
+      placeEl.classList.toggle('is-left', !!places[i].labelLeft);
     }
-    ctx.globalAlpha = a;
-    ctx.font = '600 10.5px "Helvetica Neue", Arial, sans-serif';
-    if (places[i].labelLeft) { ctx.textAlign = 'right'; ctx.fillText(places[i].name, q.x - 9, q.y - 7); ctx.textAlign = 'left'; }
-    else ctx.fillText(places[i].name, q.x + 9, q.y - 7);
-    ctx.globalAlpha = 1;
+    placeEl.style.display = '';
+    placeEl.style.transform = 'translate3d(' + q.x.toFixed(1) + 'px,' + q.y.toFixed(1) + 'px,0)';
   }
+
+
 
   function draw(t) {
     ctx.clearRect(0, 0, W, H);
@@ -185,9 +185,9 @@
     ctx.strokeStyle = RULE; ctx.lineWidth = .8;
     var lon, lat, line;
     for (lon = -180; lon < 180; lon += 15) {
-      line = []; for (lat = -MAX_LAT; lat <= MAX_LAT; lat += 3) line.push([lon * DEG, lat * DEG]); drawLine(line);
+      line = []; for (lat = -90; lat <= 90; lat += 3) line.push([lon * DEG, lat * DEG]); drawLine(line);
     }
-    for (lat = -60; lat <= 60; lat += 15) {
+    for (lat = -75; lat <= 75; lat += 15) {
       line = []; for (lon = -180; lon <= 180; lon += 3) line.push([lon * DEG, lat * DEG]); drawLine(line);
     }
 
@@ -205,19 +205,17 @@
     if (!reduceMotion) updateHop(t);
     var el = t - hop.t0;
     if (hop.phase === 'hold') {
-      drawPlace(hop.from, 1, t, 0);
+      drawPlace(hop.from);
     } else if (hop.phase === 'fly') {
       var f = ease(Math.min(1, el / FLY));
       drawArc(0, f, t);
       var head = arcPoint(f, { x: 0, y: 0, z: 0 });      // travelling head
       if (head.z > 0) { ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(head.x, head.y, 2.4, 0, Math.PI * 2); ctx.fill(); }
-      var k2 = Math.max(0, (f - APPEAR_AT) / (1 - APPEAR_AT));   // 0→1 over the last part of the flight
-      drawPlace(hop.from, 1 - k2, t, 0);
-      drawPlace(hop.to, k2, t, k2 > 0 ? k2 * 0.6 : 0);
+      drawPlace(f < APPEAR_AT ? hop.from : hop.to);      // swap places just before landing
     } else {                                             // land: tail retracts into the new place
       var g = ease(Math.min(1, el / LAND));
       drawArc(g, 1, t);
-      drawPlace(hop.to, 1, t, 0.6 + 0.4 * g);
+      drawPlace(hop.to);
     }
   }
 

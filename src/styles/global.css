@@ -256,12 +256,21 @@ footer a:hover{color:var(--ink)}
 .globe-canvas{position:absolute;top:0;left:0;width:100%;height:100vh;height:100svh;z-index:0;pointer-events:none;
   -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 98%);mask-image:linear-gradient(to bottom,#000 55%,transparent 98%)}
 .globe-home .page{position:relative;z-index:1}
+/* City marker on the globe (index): static dot + fully opaque name, above the masked canvas */
+.globe-places{position:absolute;top:0;left:0;width:100%;height:100vh;height:100svh;z-index:1;pointer-events:none;overflow:hidden}
+.gplace{position:absolute;left:0;top:0;will-change:transform}
+.gplace-dot{position:absolute;left:-3.5px;top:-3.5px;width:7px;height:7px;border-radius:50%;background:var(--ink)}
+.gplace-name{position:absolute;left:9px;top:-26px;font-family:var(--font-sans);font-size:.62rem;font-weight:600;letter-spacing:.06em;
+  color:var(--ink);background:var(--paper);padding:.1rem .35rem;border-radius:1px;white-space:nowrap;line-height:1.5}
+.gplace.is-left .gplace-name{left:auto;right:9px}
 /* Glitchy pop-up tags on the globe (index) */
 .globe-tags{position:absolute;top:0;left:0;width:100%;height:100vh;height:100svh;z-index:2;pointer-events:none;overflow:hidden;
   -webkit-mask-image:linear-gradient(to bottom,#000 70%,transparent 98%);mask-image:linear-gradient(to bottom,#000 70%,transparent 98%)}
 .gtag{position:absolute;left:0;top:0;will-change:transform,opacity;transition:opacity .2s}
 .gtag-inner{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 .gtag-dot{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 3px rgba(26,26,26,.12)}
+.gtag-dot::after{content:'';position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--ink);animation:gtag-pulse 1.6s ease-out infinite}
+@keyframes gtag-pulse{from{transform:scale(1);opacity:.9}to{transform:scale(4.2);opacity:0}}
 .gtag-line{position:absolute;left:0;top:-22px;width:1px;height:22px;background:var(--ink);transform-origin:bottom;transform:skewX(-35deg) translateX(7px)}
 .gtag-label{position:absolute;left:14px;top:-42px;display:block;font-family:var(--font-sans);font-size:.72rem;font-weight:700;letter-spacing:.14em;
   color:var(--paper);background:var(--ink);padding:.28rem .55rem .26rem .65rem;border:0;border-radius:1px;white-space:nowrap;line-height:1.7;
@@ -296,7 +305,7 @@ footer a:hover{color:var(--ink)}
 @keyframes gtag-pop{from{opacity:0;transform:scale(.2)}to{opacity:1}}
 @keyframes gtag-off{0%{opacity:1}33%{opacity:.2}50%{opacity:.9}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){
-  .gtag,.gtag *,.gtag-label::before,.gtag-label::after{animation:none!important}
+  .gtag,.gtag *,.gtag-label::before,.gtag-label::after,.gtag-dot::after{animation:none!important}
   .gtag-label::before,.gtag-label::after{opacity:0!important}
   .g-entry.is-swapping > *,.g-entry.is-swapping .g-headword{animation:none!important}
 }
