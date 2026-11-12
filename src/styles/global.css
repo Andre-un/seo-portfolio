@@ -251,12 +251,12 @@ footer a:hover{color:var(--ink)}
 }
 
 /* ==========================================================================
-   Globe homepage (home-globe.html — draft variant of the homepage)
+   Globe homepage (index — rotating globe hero)
    ========================================================================== */
 .globe-canvas{position:absolute;top:0;left:0;width:100%;height:100vh;height:100svh;z-index:0;pointer-events:none;
   -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 98%);mask-image:linear-gradient(to bottom,#000 55%,transparent 98%)}
 .globe-home .page{position:relative;z-index:1}
-/* Glitchy pop-up tags on the globe (home-globe.html) */
+/* Glitchy pop-up tags on the globe (index) */
 .globe-tags{position:absolute;top:0;left:0;width:100%;height:100vh;height:100svh;z-index:2;pointer-events:none;overflow:hidden;
   -webkit-mask-image:linear-gradient(to bottom,#000 70%,transparent 98%);mask-image:linear-gradient(to bottom,#000 70%,transparent 98%)}
 .gtag{position:absolute;left:0;top:0;will-change:transform,opacity;transition:opacity .2s}
@@ -350,7 +350,7 @@ footer a:hover{color:var(--ink)}
    Small layout helpers (replace former inline styles)
    ========================================================================== */
 .entry-actions{margin-top:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap}   /* index, about */
-.index-grid--spaced{margin-top:1.2rem}                                      /* index, home-globe */
+.index-grid--spaced{margin-top:1.2rem}                                      /* index */
 .section-label--spaced{margin-top:3.5rem}                                   /* work */
 .fact-value a{color:var(--ink)}                                             /* about */
 .shot{margin:1.5rem 0}                                                      /* work: case screenshots */
