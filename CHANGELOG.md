@@ -8,6 +8,15 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-12 — "The SEO Playbook"
+
+- Site name changed from "The SEO Dictionary" to "The SEO Playbook": masthead on every page, OG title,
+  new `public/og-image.png`, README, package name.
+- City labels on the globe: solid paper box with a little more padding, so no globe dots show through letters.
+- `_headers`: scripts in `/public` (`globe.js`, `site.js`) are always revalidated, so visitors never get
+  an old script with new CSS after a deploy.
+
 ## 2026-11-12 — Globe: static cities, pulsing topic tags
 
 - City markers are static dots; the name sits on a paper-coloured label at full opacity, in its own
