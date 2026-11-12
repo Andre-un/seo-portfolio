@@ -12,6 +12,11 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-12 — Tokyo instead of Riyadh
+
+- Globe places: Warsaw, Indiana, Brussels, Tokyo (Riyadh removed).
+
 ## 2026-11-12 — Globe markers never overlap
 
 - New tags never spawn on top of the city marker.
