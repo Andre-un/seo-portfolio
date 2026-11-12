@@ -5,6 +5,15 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-12 — Globe: one place at a time, hopping arc
+
+- Only one place is shown at a time. A dashed arc grows from the current place towards the next one
+  (Warsaw → Indiana → Brussels → Riyadh order, skipping places on the far side of the globe).
+  The new place appears with a landing ring just before the arc arrives, the old one fades out,
+  and the arc's tail then retracts into the new place. Hold 1.8 s, flight 1.7 s, landing 0.65 s
+  (`HOLD`, `FLY`, `LAND` in `public/globe.js`). Arc height scales with distance.
+
 ## 2026-11-12 — Recommendations + more places on the globe
 
 - New `src/components/Recommendations.astro`: two LinkedIn recommendations (Maciej Robak, direct manager;

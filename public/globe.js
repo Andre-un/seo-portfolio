@@ -25,8 +25,9 @@
 
   var W = 0, H = 0, R = 0, CX = 0, CY = 0, DPR = 1;
   var dots = [];                  // [lonRad, latRad]
-  // First place is the hub: a dashed route is drawn from it to every other place.
-  // labelLeft: put the label on the left of the marker (avoids clashes with neighbours).
+  // Only one place is shown at a time. A dashed arc "hops" from the current place to the
+  // next visible one; the new place appears just before the arc lands, the old one fades.
+  // labelLeft: put the label on the left of the marker.
   var places = [
     { name: 'WARSAW', lon: 21.01, lat: 52.23 },
     { name: 'INDIANA, U.S.', lon: -86.16, lat: 39.77 },
@@ -99,14 +100,79 @@
     for (var i = 0; i <= n; i++) {
       var t = i / n, k1 = Math.sin((1 - t) * w) / s, k2 = Math.sin(t * w) / s;
       var x = k1 * A[0] + k2 * B[0], y = k1 * A[1] + k2 * B[1], z = k1 * A[2] + k2 * B[2];
-      var lift = 1 + 0.06 * Math.sin(Math.PI * t), len = Math.sqrt(x * x + y * y + z * z);
+      var lift = 1 + (0.03 + 0.09 * w / Math.PI) * Math.sin(Math.PI * t), len = Math.sqrt(x * x + y * y + z * z);
       out.push([Math.atan2(y, x), Math.asin(z / len), lift]);
     }
     return out;
   }
-  var routes = places.slice(1).map(function (pl) {
-    return greatCircle([places[0].lon * DEG, places[0].lat * DEG], [pl.lon * DEG, pl.lat * DEG], 80);
-  });
+  // ---- city hops: state machine ----
+  var HOLD = 1800, FLY = 1700, LAND = 650, APPEAR_AT = 0.82;   // ms / fraction of the flight
+  var ARC_N = 80;
+  var hop = { from: 0, to: -1, phase: 'hold', t0: 0, arc: null };
+  function ease(x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
+  function placeVisible(i, minZ) {
+    project(places[i].lon * DEG, places[i].lat * DEG, q);
+    return q.z > minZ && q.x > 10 && q.x < W - 10 && q.y > 10 && q.y < H - 10;
+  }
+  function pickNext(from) {
+    for (var k = 1; k < places.length; k++) {           // keep a fixed order, skip hidden ones
+      var i = (from + k) % places.length;
+      if (placeVisible(i, 0.3)) return i;
+    }
+    return -1;
+  }
+  function updateHop(now) {
+    if (hop.phase === 'hold' && now - hop.t0 > HOLD) {
+      var nxt = pickNext(hop.from);
+      if (nxt >= 0) {
+        hop.to = nxt; hop.phase = 'fly'; hop.t0 = now;
+        hop.arc = greatCircle([places[hop.from].lon * DEG, places[hop.from].lat * DEG],
+                              [places[nxt].lon * DEG, places[nxt].lat * DEG], ARC_N);
+      }
+    } else if (hop.phase === 'fly' && now - hop.t0 >= FLY) {
+      hop.phase = 'land'; hop.t0 = now;
+    } else if (hop.phase === 'land' && now - hop.t0 >= LAND) {
+      hop.from = hop.to; hop.to = -1; hop.phase = 'hold'; hop.t0 = now; hop.arc = null;
+    }
+  }
+  function arcPoint(f, out) {                           // point at fraction f of the arc
+    var x = f * ARC_N, i = Math.min(Math.floor(x), ARC_N - 1), u = x - i, a = hop.arc[i], b = hop.arc[i + 1];
+    project(a[0], a[1], p); var ax = CX + (p.x - CX) * a[2], ay = CY + (p.y - CY) * a[2], az = p.z;
+    project(b[0], b[1], p); var bx = CX + (p.x - CX) * b[2], by = CY + (p.y - CY) * b[2];
+    out.x = ax + (bx - ax) * u; out.y = ay + (by - ay) * u; out.z = az;
+    return out;
+  }
+  function drawArc(f0, f1, t) {                         // dashed arc between two fractions
+    if (f1 <= f0) return;
+    ctx.setLineDash([4, 4]); ctx.lineDashOffset = -t / 60;   // dashes flow towards the target
+    ctx.lineWidth = 1.2; ctx.strokeStyle = INK;
+    ctx.beginPath(); var pen = false, steps = Math.max(2, Math.ceil((f1 - f0) * ARC_N)), pt = { x: 0, y: 0, z: 0 };
+    for (var s2 = 0; s2 <= steps; s2++) {
+      arcPoint(f0 + (f1 - f0) * s2 / steps, pt);
+      if (pt.z > 0) { if (pen) ctx.lineTo(pt.x, pt.y); else ctx.moveTo(pt.x, pt.y); pen = true; }
+      else pen = false;
+    }
+    ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+  }
+  function drawPlace(i, alpha, t, burst) {
+    project(places[i].lon * DEG, places[i].lat * DEG, q);
+    if (q.z <= 0.05 || alpha <= 0) return;
+    var a = alpha * Math.min(1, q.z * 1.6);
+    var pulse = reduceMotion ? 0 : (t / 1600) % 1;
+    ctx.globalAlpha = a; ctx.fillStyle = INK; ctx.strokeStyle = INK; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(q.x, q.y, 3.2, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = a * (1 - pulse);
+    ctx.beginPath(); ctx.arc(q.x, q.y, 4 + pulse * 14, 0, Math.PI * 2); ctx.stroke();
+    if (burst > 0 && burst < 1) {                        // landing ring
+      ctx.globalAlpha = a * (1 - burst); ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(q.x, q.y, 4 + burst * 26, 0, Math.PI * 2); ctx.stroke(); ctx.lineWidth = 1;
+    }
+    ctx.globalAlpha = a;
+    ctx.font = '600 10.5px "Helvetica Neue", Arial, sans-serif';
+    if (places[i].labelLeft) { ctx.textAlign = 'right'; ctx.fillText(places[i].name, q.x - 9, q.y - 7); ctx.textAlign = 'left'; }
+    else ctx.fillText(places[i].name, q.x + 9, q.y - 7);
+    ctx.globalAlpha = 1;
+  }
 
   function draw(t) {
     ctx.clearRect(0, 0, W, H);
@@ -134,36 +200,24 @@
     }
     ctx.globalAlpha = 1;
 
-    ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2; ctx.strokeStyle = INK;
-    for (var rr = 0; rr < routes.length; rr++) {
-      var route = routes[rr];
-      ctx.beginPath(); var pen = false;
-      for (var j = 0; j < route.length; j++) {
-        project(route[j][0], route[j][1], p);
-        if (p.z > 0) {
-          var x = CX + (p.x - CX) * route[j][2], y = CY + (p.y - CY) * route[j][2];
-          if (pen) ctx.lineTo(x, y); else ctx.moveTo(x, y); pen = true;
-        } else pen = false;
-      }
-      ctx.stroke();
+    // one place at a time, with a hopping arc between them
+    if (!reduceMotion) updateHop(t);
+    var el = t - hop.t0;
+    if (hop.phase === 'hold') {
+      drawPlace(hop.from, 1, t, 0);
+    } else if (hop.phase === 'fly') {
+      var f = ease(Math.min(1, el / FLY));
+      drawArc(0, f, t);
+      var head = arcPoint(f, { x: 0, y: 0, z: 0 });      // travelling head
+      if (head.z > 0) { ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(head.x, head.y, 2.4, 0, Math.PI * 2); ctx.fill(); }
+      var k2 = Math.max(0, (f - APPEAR_AT) / (1 - APPEAR_AT));   // 0→1 over the last part of the flight
+      drawPlace(hop.from, 1 - k2, t, 0);
+      drawPlace(hop.to, k2, t, k2 > 0 ? k2 * 0.6 : 0);
+    } else {                                             // land: tail retracts into the new place
+      var g = ease(Math.min(1, el / LAND));
+      drawArc(g, 1, t);
+      drawPlace(hop.to, 1, t, 0.6 + 0.4 * g);
     }
-    ctx.setLineDash([]);
-
-    var pulse = reduceMotion ? 0 : (t / 1600) % 1;
-    ctx.font = '600 10.5px "Helvetica Neue", Arial, sans-serif';
-    for (var k = 0; k < places.length; k++) {
-      project(places[k].lon * DEG, places[k].lat * DEG, q);
-      if (q.z <= 0.05) continue;
-      ctx.globalAlpha = q.z;
-      ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(q.x, q.y, 3.2, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = INK; ctx.lineWidth = 1;
-      ctx.globalAlpha = q.z * (1 - pulse);
-      ctx.beginPath(); ctx.arc(q.x, q.y, 4 + pulse * 14, 0, Math.PI * 2); ctx.stroke();
-      ctx.globalAlpha = q.z;
-      if (places[k].labelLeft) { ctx.textAlign = 'right'; ctx.fillText(places[k].name, q.x - 9, q.y - 7); ctx.textAlign = 'left'; }
-      else ctx.fillText(places[k].name, q.x + 9, q.y - 7);
-    }
-    ctx.globalAlpha = 1;
   }
 
   // ======================================================================
