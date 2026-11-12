@@ -16,15 +16,24 @@ html{font-size:17px;scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--font-serif);line-height:1.7;min-height:100vh}
 .page{max-width:var(--max-width);margin:0 auto;padding:0 1.5rem}
 
-/* Header */
-header{padding:2.5rem 0 1rem}
-.masthead-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
-.site-name{font-family:var(--font-serif);font-size:1.1rem;font-weight:normal;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-light)}
-.hire-btn{display:inline-block;font-family:var(--font-sans);font-size:.85rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.6rem 1.35rem;border-radius:2px;white-space:nowrap;transition:opacity .15s;flex-shrink:0}
+/* Header: one bar — logo · tabs · Hire me (all pages) */
+.topbar{display:flex;align-items:flex-end;gap:1.5rem;padding:1.6rem 0 0;margin-bottom:3rem;border-bottom:1px solid var(--rule)}
+.logo{margin:0;padding-bottom:.75rem;font-family:var(--font-serif);font-weight:normal;font-size:1.45rem;line-height:1;white-space:nowrap;flex-shrink:0}
+.logo a{color:var(--ink);text-decoration:none}
+.topbar nav{flex:1 1 auto;min-width:0}
+.hire-btn{display:inline-block;font-family:var(--font-sans);font-size:.78rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.55rem 1.1rem;border-radius:2px;white-space:nowrap;transition:opacity .15s;flex-shrink:0;margin-bottom:.5rem}
 .hire-btn:hover{opacity:.75}
-.masthead-title{font-family:var(--font-serif);font-size:clamp(2.2rem,6vw,3.4rem);font-weight:normal;line-height:1.1;margin:.6rem 0 .4rem}
-.masthead-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;border-top:1px solid var(--rule);padding-top:.6rem;margin-top:.6rem}
-.masthead-tagline{font-family:var(--font-sans);font-size:.82rem;color:var(--ink-light);letter-spacing:.08em;text-transform:uppercase;border-top:1px solid var(--rule);padding-top:.6rem;margin-top:.6rem}
+/* Wide screens: the bar spans 60% of the window (at least 840px), centred, on one line */
+@media (min-width:900px){
+  .topbar{width:max(60vw,min(840px,calc(100vw - 3rem)));margin-left:calc((100% - max(60vw,min(840px,calc(100vw - 3rem)))) / 2)}
+}
+/* Narrower screens: logo + Hire me on the first row, tabs full width below */
+@media (max-width:899px){
+  .topbar{flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem}
+  .logo{padding:0}
+  .hire-btn{margin:0}
+  .topbar nav{order:3;flex-basis:100%}
+}
 
 /* Availability badge */
 .avail{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-sans);font-size:.75rem;color:var(--ink-light);flex-shrink:0}
@@ -34,30 +43,22 @@ header{padding:2.5rem 0 1rem}
 .status{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-sans);font-size:.75rem;color:var(--ink-light);margin-top:1rem}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#4a9e6b;display:inline-block;flex-shrink:0}
 
-/* Nav — secondary tab bar. Plain text labels in 5 fixed, evenly-split
-   columns that NEVER move. Every tab reserves a 1px transparent border
-   (so nothing shifts on click) — the active tab just turns that border
-   ink-coloured on three sides (no bottom), with rounded corners, giving a
-   single thin outline that wraps the chosen tab. */
-nav{position:relative;padding:0 0 1rem;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
-/* Desktop: long nav — 20% margin · 60% nav · 20% margin of the window (never narrower than the page column) */
-@media (min-width:761px){
-  nav{width:max(100%,60vw);margin-left:calc((100% - max(100%,60vw)) / 2)}
-}
+/* Tabs: plain labels; the active tab gets a thin outline that opens onto the bar's bottom rule */
 .tab-nav{position:relative;list-style:none;display:flex;flex:1 1 auto;min-width:0;align-items:flex-end}
-.tab-nav li{display:flex;flex:1 1 0;min-width:0}
+.tab-nav li{display:flex;flex:1 1 auto;min-width:0}
 .tab{
   position:relative;
   display:block;
   width:100%;
   text-align:center;
   font-family:var(--font-sans);
-  font-size:.76rem;
-  letter-spacing:.09em;
+  font-size:.72rem;
+  letter-spacing:.08em;
   text-transform:uppercase;
   text-decoration:none;
   color:var(--ink-light);
-  padding:.6rem 1rem .55rem;
+  padding:.6rem .7rem .6rem;
+  white-space:nowrap;
   border:1px solid transparent;
   border-bottom:none;
   border-radius:8px 8px 6px 6px;
@@ -68,6 +69,9 @@ nav{position:relative;padding:0 0 1rem;margin-bottom:3rem;display:flex;justify-c
   color:var(--ink);
   font-weight:700;
   border-color:var(--ink);
+  background:var(--paper);
+  margin-bottom:-1px;            /* covers the bar's rule under the active tab */
+  padding-bottom:calc(.6rem + 1px);
 }
 
 /* Results bar (index.html) */
@@ -231,15 +235,15 @@ nav{position:relative;padding:0 0 1rem;margin-bottom:3rem;display:flex;justify-c
 
 /* Footer */
 footer{border-top:2px solid var(--ink);padding:1.5rem 0 3rem;margin-top:4rem;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem}
+footer .avail{font-size:.75rem}
 footer span{font-family:var(--font-sans);font-size:.75rem;color:var(--ink-faint);letter-spacing:.04em}
 footer a{color:var(--ink-light);text-decoration:none}
 footer a:hover{color:var(--ink)}
 
 /* Responsive */
 @media(max-width:560px){
-  .masthead-title{font-size:2rem}
   .hire-btn{font-size:.72rem;padding:.5rem 1rem}
-  .tab{padding:.5rem .4rem .45rem;font-size:.62rem;letter-spacing:.04em}
+  .tab{padding:.5rem .4rem .5rem;font-size:.62rem;letter-spacing:.04em}
   .results-bar{flex-direction:column}
   .result{border-right:none;border-bottom:1px solid var(--rule)}
   .result:last-child{border-bottom:none}
@@ -314,8 +318,8 @@ footer a:hover{color:var(--ink)}
   .gtag-label::before,.gtag-label::after{opacity:0!important}
   .g-entry.is-swapping > *,.g-entry.is-swapping .g-headword{animation:none!important}
 }
-.globe-home nav{margin-bottom:1.5rem}
-.g-hero{position:relative;min-height:calc(100vh - 19rem);min-height:calc(100svh - 19rem);display:flex;flex-direction:column;justify-content:flex-start;padding-bottom:4rem}
+.globe-home .topbar{margin-bottom:1.5rem}
+.g-hero{position:relative;min-height:calc(100vh - 9rem);min-height:calc(100svh - 9rem);display:flex;flex-direction:column;justify-content:flex-start;padding-bottom:4rem}
 .g-entry{margin-left:auto;max-width:27rem;background:rgba(250,249,247,.82);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);padding:.4rem 0 .4rem 1.4rem;border-left:1px solid var(--rule)}
 .g-kicker{font-family:var(--font-sans);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint)}
 .g-kicker em{font-family:var(--font-serif);font-size:.9rem;letter-spacing:0;text-transform:none}

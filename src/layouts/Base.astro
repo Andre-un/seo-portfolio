@@ -68,26 +68,19 @@ const ldJson = JSON.stringify(personLd);
 
 <div class="page">
 
-  <header>
-    <div class="masthead-top">
-      <span class="site-name">Jędrzej Szymula</span>
-      <a href={mailto} class="hire-btn">Hire me →</a>
-    </div>
-    <h1 class="masthead-title">The SEO<br>Playbook</h1>
-    <div class="masthead-bottom">
-      <span class="avail"><span class="avail-dot"></span>Available for new projects</span>
-    </div>
+  <header class="topbar">
+    <h1 class="logo"><a href="./" title="Jędrzej Szymula — The SEO Playbook">The SEO Playbook</a></h1>
+    <nav aria-label="Main">
+      <ul class="tab-nav">
+        <li><a href="./" class={active === 'home' ? 'tab active' : 'tab'}>Home</a></li>
+        <li><a href="work.html" class={active === 'work' ? 'tab active' : 'tab'}>Resources</a></li>
+        <li><a href="knowledge.html" class={active === 'knowledge' ? 'tab active' : 'tab'}>Knowledge</a></li>
+        <li><a href="about.html" class={active === 'about' ? 'tab active' : 'tab'}>About Me</a></li>
+        <li><a href="shop.html" class={active === 'shop' ? 'tab active' : 'tab'}>Shop</a></li>
+      </ul>
+    </nav>
+    <a href={mailto} class="hire-btn">Hire me →</a>
   </header>
-
-  <nav>
-    <ul class="tab-nav">
-      <li><a href="./" class={active === 'home' ? 'tab active' : 'tab'}>Home</a></li>
-      <li><a href="work.html" class={active === 'work' ? 'tab active' : 'tab'}>Resources</a></li>
-      <li><a href="knowledge.html" class={active === 'knowledge' ? 'tab active' : 'tab'}>Knowledge</a></li>
-      <li><a href="about.html" class={active === 'about' ? 'tab active' : 'tab'}>About Me</a></li>
-      <li><a href="shop.html" class={active === 'shop' ? 'tab active' : 'tab'}>Shop</a></li>
-    </ul>
-  </nav>
 
   <main>
     <slot />
@@ -95,6 +88,7 @@ const ldJson = JSON.stringify(personLd);
 
   <footer>
     <span>© <span id="cur-year">2026</span> Jędrzej Szymula</span>
+    <span class="avail"><span class="avail-dot"></span>Available for new projects</span>
     <span>
       <a href={mailto}>Contact</a>
       &nbsp;·&nbsp;
