@@ -6,6 +6,13 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-12 — Globe tilted, no Arctic
+
+- View tilt lowered from 18° to 4° (`TILT` in `public/globe.js`), so the North Pole sits on the horizon.
+- Nothing is drawn above 66° (`MAX_LAT`): no Arctic land dots, meridians stop there and parallels run
+  up to 60°, so the grid no longer converges into a visible pole.
+
 ## 2026-11-12 — Globe: one place at a time, hopping arc
 
 - Only one place is shown at a time. A dashed arc grows from the current place towards the next one
