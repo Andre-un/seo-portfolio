@@ -35,15 +35,26 @@
     { name: 'RIYADH', lon: 46.68, lat: 24.71 }
   ];
 
-  function isWide() { return W >= 760; }
+  function isWide() { return W > 760; }
 
   function layout() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
+    // Phones: the globe sits in its own strip below the hero text (not behind it).
+    // The strip's position/height go to CSS variables used by the three globe layers.
+    var root = document.documentElement, entry = document.getElementById('g-entry');
+    if (canvas.clientWidth <= 760 && entry) {
+      var stripH = Math.round(Math.min(canvas.clientWidth * 0.8, 360));
+      root.style.setProperty('--globe-h', stripH + 'px');
+      var actions = entry.getBoundingClientRect();
+      root.style.setProperty('--globe-top', Math.round(actions.bottom + window.scrollY + 24) + 'px');
+    } else {
+      root.style.removeProperty('--globe-h'); root.style.removeProperty('--globe-top');
+    }
     W = canvas.clientWidth; H = canvas.clientHeight;
     canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     if (isWide()) { R = H * 0.66; CX = W * 0.03; CY = H * 1.14; }
-    else { R = Math.min(W * 1.0, H * 0.5); CX = -W * 0.02; CY = H * 1.06; }
+    else { R = W * 0.95; CX = W * 0.1; CY = H * 0.12 + R; }   // a cap rising from the bottom strip
   }
 
   // ---- projection (orthographic, manual for speed) ----
@@ -302,7 +313,7 @@
     // Start on the "near" side (left part of the visible arc), so the tag has
     // the whole trip across the globe before it reaches the horizon.
     var wide = isWide();
-    var xMin = 24, xMax = wide ? W * 0.24 : W * 0.4, yMin = H * (wide ? 0.52 : 0.64), yMax = H * 0.84;
+    var xMin = 24, xMax = wide ? W * 0.24 : W * 0.85, yMin = H * (wide ? 0.52 : 0.3), yMax = H * (wide ? 0.84 : 0.75);
     var block = blockedRect();
     for (var tries = 0; tries < 600; tries++) {
       var d = dots[(Math.random() * dots.length) | 0];
@@ -402,6 +413,7 @@
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (e) { e[0].isIntersecting ? start() : stop(); }).observe(canvas);
   }
+  window.addEventListener('load', function () { layout(); if (reduceMotion || !running) { draw(0); updateTags(-1, 0); } });
   window.addEventListener('resize', function () { layout(); if (reduceMotion || !running) { draw(0); updateTags(-1, 0); } });
 
   layout();

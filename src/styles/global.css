@@ -40,6 +40,10 @@ header{padding:2.5rem 0 1rem}
    ink-coloured on three sides (no bottom), with rounded corners, giving a
    single thin outline that wraps the chosen tab. */
 nav{position:relative;padding:0 0 1rem;margin-bottom:3rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:.5rem 1rem}
+/* Desktop: long nav — 20% margin · 60% nav · 20% margin of the window (never narrower than the page column) */
+@media (min-width:761px){
+  nav{width:max(100%,60vw);margin-left:calc((100% - max(100%,60vw)) / 2)}
+}
 .tab-nav{position:relative;list-style:none;display:flex;flex:1 1 auto;min-width:0;align-items:flex-end}
 .tab-nav li{display:flex;flex:1 1 0;min-width:0}
 .tab{
@@ -340,12 +344,14 @@ footer a:hover{color:var(--ink)}
 .g-scroll:hover{color:var(--ink)}
 .g-after{position:relative;background:var(--paper);padding-top:2rem}
 @media (max-width:760px){
-  .g-hero{min-height:calc(100svh - 17rem)}
+  /* phones: globe in its own strip under the hero (top/height set by globe.js) */
+  .globe-canvas,.globe-places,.globe-tags{top:var(--globe-top,0);height:var(--globe-h,100svh)}
+  .g-hero{min-height:0;padding-bottom:calc(var(--globe-h,0px) + 1.5rem)}
   .g-entry{max-width:none;padding-left:1rem;background:none;-webkit-backdrop-filter:none;backdrop-filter:none}
-  .globe-canvas{opacity:.5}
-  .globe-tags{opacity:.75;z-index:0}
   .gtag-label{pointer-events:none}
-  .g-stats{gap:.8rem 1.1rem}
+  .g-entry{min-width:0}
+  .g-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem 1rem}
+  .g-stats dd{white-space:normal}
   .g-scroll{display:none}
 }
 

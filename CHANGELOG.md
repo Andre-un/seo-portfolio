@@ -9,6 +9,16 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-12 — Mobile globe at the bottom, long desktop nav
+
+- Phones (≤760px): the globe moved out from behind the hero text into its own strip below the buttons —
+  a cap rising from the bottom, full opacity. `globe.js` sets `--globe-top` / `--globe-h`, which the
+  canvas, city and tag layers and the hero's bottom padding use.
+- Desktop: the tab nav spans 60% of the window, centred (20% · 60% · 20%), never narrower than the
+  page column.
+- Fixed a 6px horizontal overflow on phones (hero stats now share the width in three equal columns).
+
 ## 2026-11-12 — "The SEO Playbook"
 
 - Site name changed from "The SEO Dictionary" to "The SEO Playbook": masthead on every page, OG title,
