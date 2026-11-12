@@ -10,6 +10,15 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-12 — One-line header bar
+
+- The big two-line masthead is replaced by a header bar: "The SEO Playbook" logo on the far left,
+  the tabs, and "Hire me" on the right — one line on screens ≥900px (bar spans 60% of the window,
+  at least 840px, centred). Below 900px: logo + Hire me on the first row, tabs underneath.
+- The active tab's outline opens onto the bar's bottom rule (folder-tab look).
+- "Available for new projects" moved to the footer.
+
 ## 2026-11-12 — Mobile globe at the bottom, long desktop nav
 
 - Phones (≤760px): the globe moved out from behind the hero text into its own strip below the buttons —
