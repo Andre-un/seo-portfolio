@@ -32,7 +32,7 @@
     { name: 'WARSAW', lon: 21.01, lat: 52.23 },
     { name: 'INDIANA, U.S.', lon: -86.16, lat: 39.77 },
     { name: 'BRUSSELS', lon: 4.35, lat: 50.85, labelLeft: true },
-    { name: 'RIYADH', lon: 46.68, lat: 24.71 }
+    { name: 'TOKYO', lon: 139.69, lat: 35.69 }
   ];
 
   function isWide() { return W > 760; }
