@@ -309,18 +309,38 @@
     return !(r < b.l || l > b.r || bt < b.t || t > b.b);
   }
 
+  // ---- collision boxes (canvas coordinates), so markers never overlap ----
+  var GAP = 8;                              // minimum free space between two markers
+  function boxOf(els) {
+    var c = canvas.getBoundingClientRect(), l = 1e9, t = 1e9, r = -1e9, b = -1e9;
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i].getBoundingClientRect();
+      if (!e.width && !e.height) continue;
+      l = Math.min(l, e.left); t = Math.min(t, e.top); r = Math.max(r, e.right); b = Math.max(b, e.bottom);
+    }
+    if (l > r) return null;
+    return { l: l - c.left - GAP, t: t - c.top - GAP, r: r - c.left + GAP, b: b - c.top + GAP };
+  }
+  function overlaps(a, b) { return !!(a && b) && !(a.r < b.l || a.l > b.r || a.b < b.t || a.t > b.b); }
+  function cityBox() {
+    if (placeEl.style.display === 'none' || shownPlace < 0) return null;
+    return boxOf([placeEl.firstChild, placeName]);
+  }
+  function tagBox(t) { return boxOf([t.el.querySelector('.gtag-dot'), t.el.querySelector('.gtag-label')]); }
+
   function pickAnchor() {
     // Start on the "near" side (left part of the visible arc), so the tag has
     // the whole trip across the globe before it reaches the horizon.
     var wide = isWide();
     var xMin = 24, xMax = wide ? W * 0.24 : W * 0.85, yMin = H * (wide ? 0.52 : 0.3), yMax = H * (wide ? 0.84 : 0.75);
-    var block = blockedRect();
+    var block = blockedRect(), city = cityBox();
     for (var tries = 0; tries < 600; tries++) {
       var d = dots[(Math.random() * dots.length) | 0];
       if (!d) break;
       project(d[0], d[1], p);
       if (p.z < 0.5 || p.x < xMin || p.x > xMax || p.y < yMin || p.y > yMax) continue;
       if (hitsRect(p.x, p.y, block)) continue;
+      if (hitsRect(p.x, p.y, city)) continue;     // not on top of the city marker
       var clash = false;
       for (var i = 0; i < tags.length; i++) {
         project(tags[i].lon, tags[i].lat, q);
@@ -386,6 +406,26 @@
       if (t.stage === 'in' && gone) goOut(t, now);
       if (t.stage === 'out' && now - t.outAt > 420) { t.el.remove(); tags.splice(i, 1); }
     }
+    resolveOverlaps(now);
+  }
+
+  // Markers must never overlap. A tag that runs into the city marker or another tag
+  // glitches out early; a tag the reader is hovering wins — then the city hides instead.
+  function retire(t, now) { goOut(t, now); t.el.style.visibility = 'hidden'; }   // gone at once: no overlap, even mid-glitch
+  function resolveOverlaps(now) {
+    var live = tags.filter(function (t) { return t.stage === 'in'; });
+    var boxes = live.map(tagBox), city = cityBox(), hideCity = false;
+    for (var i = 0; i < live.length; i++) {
+      var t = live[i], held = t.hover || t.active;
+      if (overlaps(boxes[i], city)) { if (held) hideCity = true; else { retire(t, now); boxes[i] = null; continue; } }
+      for (var j = 0; j < i; j++) {
+        if (!boxes[j] || !overlaps(boxes[i], boxes[j])) continue;
+        var u = live[j], uHeld = u.hover || u.active;
+        if (!held) { retire(t, now); boxes[i] = null; break; }      // live is oldest-first: drop the newer one
+        if (!uHeld) { retire(u, now); boxes[j] = null; }
+      }
+    }
+    placeEl.style.visibility = hideCity ? 'hidden' : '';
   }
 
   // ---- loop: only animate while the hero is on screen ----
