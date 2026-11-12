@@ -1,4 +1,4 @@
-// Shared behaviour across all pages of The SEO Dictionary
+// Shared behaviour across all pages of The SEO Playbook
 
 // Keep footer copyright year current automatically.
 document.querySelectorAll('#cur-year').forEach(function (el) {

@@ -1,4 +1,4 @@
-# The SEO Dictionary — Jędrzej Szymula
+# The SEO Playbook — Jędrzej Szymula
 
 Personal portfolio: case studies, knowledge entries and (soon) digital products.
 Built with [Astro](https://astro.build) and hosted for free on Cloudflare Pages.
