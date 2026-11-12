@@ -3,6 +3,15 @@
 Running history of changes made to this site, kept so future sessions have context without re-discovering everything from scratch.
 
 
+
+## 2026-11-12 — Globe homepage is the homepage
+
+- `src/pages/index.astro` is now the rotating-globe homepage (indexable, own OG title/description).
+  The previous dictionary-style homepage was removed; its content is covered by the globe hero
+  and the "See also" entries below it.
+- The draft URL `/home-globe.html` 301-redirects to `/` (`public/_redirects`), so there is one link.
+- The "Home" tab on every page points to `./` (the root).
+
 ## 2026-11-12 — Migration to Astro
 
 - Site rebuilt as an Astro project (static output, same look, same URLs via `build.format: 'file'`).

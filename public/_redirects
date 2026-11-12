@@ -1,0 +1,4 @@
+# One address for the homepage: the old draft URL of the globe homepage
+# permanently redirects to the root.
+/home-globe.html  /  301
+/home-globe       /  301

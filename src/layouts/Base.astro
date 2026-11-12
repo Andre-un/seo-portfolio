@@ -19,7 +19,6 @@ const {
   ogTitle = title,
   ogDescription = description,
   active = '',
-  homeHref = 'index.html',
   robots = 'index, follow',
   bodyClass,
 } = Astro.props;
@@ -82,7 +81,7 @@ const ldJson = JSON.stringify(personLd);
 
   <nav>
     <ul class="tab-nav">
-      <li><a href={homeHref} class={active === 'home' ? 'tab active' : 'tab'}>Home</a></li>
+      <li><a href="./" class={active === 'home' ? 'tab active' : 'tab'}>Home</a></li>
       <li><a href="work.html" class={active === 'work' ? 'tab active' : 'tab'}>Resources</a></li>
       <li><a href="knowledge.html" class={active === 'knowledge' ? 'tab active' : 'tab'}>Knowledge</a></li>
       <li><a href="about.html" class={active === 'about' ? 'tab active' : 'tab'}>About Me</a></li>

@@ -18,18 +18,18 @@ no JavaScript framework is shipped to visitors.
 src/
   layouts/Base.astro   Shared layout (head, masthead, nav, footer, JSON-LD)
   pages/*.astro        One file per page → built to /<name>.html (old URLs kept)
-    index.astro          Home
+    index.astro          Home: rotating globe + dictionary entry, topic tags (SEO/AEO/GEO/AI/B2B)
     work.astro           Case studies, earlier work, free checklists
     knowledge.astro      SEO / AEO / GEO entries (#seo, #aeo, #geo)
     about.astro          Bio, expertise, full experience timeline
     shop.astro           Upcoming products (waitlist by email)
-    home-globe.astro     Draft homepage with the rotating globe (noindex)
   styles/global.css    The only stylesheet — no inline style="" in pages
 public/                Copied as-is to the site root
   images/              Case-study screenshots and report previews
   downloads/           PDFs: Flobotics report + 3 free SEO checklists
   globe.js, site.js    Small vanilla scripts
   _headers             Cloudflare security + caching headers
+  _redirects           301 from the old /home-globe.html draft URL to /
   robots.txt, sitemap.xml, favicons, og-image.png
 ```
 
