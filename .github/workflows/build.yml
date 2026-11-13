@@ -20,7 +20,7 @@ jobs:
         run: |
           for f in index.html work.html knowledge.html about.html shop.html \
                    sitemap.xml robots.txt _headers _redirects site.js globe.js \
-                   downloads/flobotics-state-of-rcm-automation-2026.pdf \
+                   downloads/flobotics-state-of-rcm-automation-2026.pdf downloads/jedrzej-szymula-cv.pdf \
                    downloads/on-page-seo-checklist.pdf downloads/off-page-seo-checklist.pdf \
                    downloads/technical-seo-checklist.pdf; do
             test -f "dist/$f" || { echo "Missing dist/$f"; exit 1; }

@@ -13,6 +13,14 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-13 — CV on the homepage
+
+- `public/downloads/jedrzej-szymula-cv.pdf` (English CV, 2 pages) linked from a "See my CV" button in the
+  homepage hero, next to "See the work" and "Work with me"; opens in a new tab.
+- Hero buttons slightly tighter and the entry box a bit wider so all three fit on one line on desktop.
+- Note: the CV contains a phone number and a personal email — it is public on the site and in this repo.
+
 ## 2026-11-12 — Tokyo instead of Riyadh
 
 - Globe places: Warsaw, Indiana, Brussels, Tokyo (Riyadh removed).
