@@ -21,8 +21,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--font-serif);line
 .logo{margin:0;padding-bottom:.75rem;font-family:var(--font-serif);font-weight:normal;font-size:1.45rem;line-height:1;white-space:nowrap;flex-shrink:0}
 .logo a{color:var(--ink);text-decoration:none}
 .topbar nav{flex:1 1 auto;min-width:0}
-.hire-btn{display:inline-block;font-family:var(--font-sans);font-size:.78rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.55rem 1.1rem;border-radius:2px;white-space:nowrap;transition:opacity .15s;flex-shrink:0;margin-bottom:.5rem}
-.hire-btn:hover{opacity:.75}
+.hire-btn{flex-shrink:0;white-space:nowrap;margin-bottom:.5rem}   /* placement only — looks like every other .btn */
 /* Wide screens: the bar spans 60% of the window (at least 840px), centred, on one line */
 @media (min-width:900px){
   .topbar{width:max(60vw,min(840px,calc(100vw - 3rem)));margin-left:calc((100% - max(60vw,min(840px,calc(100vw - 3rem)))) / 2)}
@@ -112,6 +111,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--font-serif);line
 [data-def]:focus-visible{outline:1px dotted var(--ink-faint);outline-offset:2px}
 
 /* CTA buttons */
+/* Buttons: one style for every button on the site (.btn, plus .btn-ghost for the outlined variant).
+   Other classes on a button may only place it (margins, width), never restyle it. */
 .btn{display:inline-block;font-family:var(--font-sans);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--paper);background:var(--ink);padding:.6rem 1.2rem;border:1px solid var(--ink);border-radius:2px;cursor:pointer;transition:background .15s,color .15s}
 .btn:hover{background:transparent;color:var(--ink)}
 .btn-ghost{background:transparent;color:var(--ink)}
@@ -242,7 +243,6 @@ footer a:hover{color:var(--ink)}
 
 /* Responsive */
 @media(max-width:560px){
-  .hire-btn{font-size:.72rem;padding:.5rem 1rem}
   .tab{padding:.5rem .4rem .5rem;font-size:.62rem;letter-spacing:.04em}
   .results-bar{flex-direction:column}
   .result{border-right:none;border-bottom:1px solid var(--rule)}
@@ -267,6 +267,7 @@ footer a:hover{color:var(--ink)}
 /* City marker on the globe (index): static dot + fully opaque name, above the masked canvas */
 .globe-places{position:absolute;top:0;left:0;width:100%;height:100vh;height:100svh;z-index:1;pointer-events:none;overflow:hidden}
 .gplace{position:absolute;left:0;top:0;will-change:transform}
+.gplace-inner{position:absolute;left:0;top:0;transform-origin:0 0}
 .gplace-dot{position:absolute;left:-3.5px;top:-3.5px;width:7px;height:7px;border-radius:50%;background:var(--ink)}
 .gplace-name{position:absolute;left:9px;top:-27px;display:block;font-family:var(--font-sans);font-size:.62rem;font-weight:600;letter-spacing:.06em;
   color:var(--ink);background-color:var(--paper);padding:.15rem .4rem;border-radius:2px;white-space:nowrap;line-height:1.5;
@@ -286,14 +287,16 @@ footer a:hover{color:var(--ink)}
   pointer-events:auto;cursor:pointer;transition:box-shadow .2s,background .2s,color .2s}
 .gtag-label:hover,.gtag-label:focus-visible,.gtag.is-active .gtag-label{background:var(--paper);color:var(--ink);box-shadow:0 0 0 1px var(--ink),0 6px 18px -8px rgba(0,0,0,.4);outline:none}
 .gtag.is-active .gtag-dot{box-shadow:0 0 0 6px rgba(26,26,26,.12)}
-.gtag-label::before,.gtag-label::after{content:attr(data-text);position:absolute;inset:0;padding:inherit;background:var(--ink);opacity:0}
-.gtag-label::before{color:#ff5a4e;}
-.gtag-label::after{color:#3fd0e0;}
-.gtag.is-in .gtag-label,.gtag.is-out .gtag-label,.gtag.is-burst .gtag-label{animation:gtag-jitter .42s steps(2,end) both}
-.gtag.is-in .gtag-label::before,.gtag.is-out .gtag-label::before,.gtag.is-burst .gtag-label::before{opacity:.9;animation:gtag-slice-a .42s steps(1,end) infinite}
-.gtag.is-in .gtag-label::after,.gtag.is-out .gtag-label::after,.gtag.is-burst .gtag-label::after{opacity:.9;animation:gtag-slice-b .42s steps(1,end) infinite}
-.gtag.is-in .gtag-line,.gtag.is-in .gtag-dot{animation:gtag-pop .3s ease-out both}
-.gtag.is-out{animation:gtag-off .42s steps(3,end) forwards}
+/* ONE GLITCH for every marker on the globe (cities and topic tags), 420ms = GLITCH in globe.js.
+   The marker gets .is-in / .is-out; its text label carries .glitch + data-text. */
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;padding:inherit;background:inherit;border-radius:inherit;opacity:0;pointer-events:none}
+.glitch::before{color:#ff5a4e}
+.glitch::after{color:#3fd0e0}
+.is-in .glitch,.is-out .glitch{animation:gtag-jitter .42s steps(2,end) both}
+.is-in .glitch::before,.is-out .glitch::before{opacity:.9;animation:gtag-slice-a .42s steps(1,end) infinite}
+.is-in .glitch::after,.is-out .glitch::after{opacity:.9;animation:gtag-slice-b .42s steps(1,end) infinite}
+.is-in .gtag-line,.is-in .gtag-dot,.is-in .gplace-dot{animation:gtag-pop .3s ease-out both}
+.gtag.is-out,.gplace.is-out{animation:gtag-off .42s steps(3,end) forwards}
 @keyframes gtag-jitter{
   0%{clip-path:inset(0 100% 0 0);transform:translate(-4px,0)}
   20%{clip-path:inset(30% 0 40% 0);transform:translate(3px,-1px)}
@@ -314,8 +317,8 @@ footer a:hover{color:var(--ink)}
 @keyframes gtag-pop{from{opacity:0;transform:scale(.2)}to{opacity:1}}
 @keyframes gtag-off{0%{opacity:1}33%{opacity:.2}50%{opacity:.9}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){
-  .gtag,.gtag *,.gtag-label::before,.gtag-label::after,.gtag-dot::after{animation:none!important}
-  .gtag-label::before,.gtag-label::after{opacity:0!important}
+  .gtag,.gtag *,.gplace,.gplace *,.glitch::before,.glitch::after,.gtag-dot::after{animation:none!important}
+  .glitch::before,.glitch::after{opacity:0!important}
   .g-entry.is-swapping > *,.g-entry.is-swapping .g-headword{animation:none!important}
 }
 .globe-home .topbar{margin-bottom:1.5rem}
@@ -345,13 +348,13 @@ footer a:hover{color:var(--ink)}
 .g-box-meta{display:flex;flex-direction:column;gap:.45rem;padding-top:.8rem;border-top:1px solid var(--rule)}
 .g-cv{font-family:var(--font-sans);font-size:.75rem;color:var(--ink-light);text-underline-offset:3px}
 .g-cv:hover{color:var(--ink)}
-.g-box-btn{margin-top:auto;text-align:center;padding:.7rem 1rem}
+.g-box-btn{margin-top:auto;text-align:center}
 .g-intro{font-size:1rem;line-height:1.75;margin-bottom:1.4rem}
 .g-topics{display:none}
 .g-entry.is-topic .g-headword{font-size:clamp(2.6rem,6vw,3.6rem);letter-spacing:.02em}
 .g-entry.is-topic .g-pron{font-style:normal;font-family:var(--font-sans);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-light)}
-.g-entry.is-swapping > *{animation:gtag-jitter .4s steps(2,end) both}
-.g-entry.is-swapping .g-headword{animation:g-split .4s steps(2,end) both}
+.g-entry.is-swapping > *{animation:gtag-jitter .42s steps(2,end) both}          /* same glitch as the markers */
+.g-entry.is-swapping .g-headword{animation:g-split .42s steps(2,end) both}
 @keyframes g-split{
   0%{text-shadow:-4px 0 #ff5a4e,4px 0 #3fd0e0;clip-path:inset(0 0 55% 0);transform:translateX(-3px)}
   40%{text-shadow:3px 0 #ff5a4e,-3px 0 #3fd0e0;clip-path:inset(40% 0 0 0);transform:translateX(2px)}

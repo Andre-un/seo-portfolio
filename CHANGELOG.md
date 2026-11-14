@@ -16,6 +16,21 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-14 — Globe simplified: fixed loop, one glitch, one button style
+
+- `public/globe.js` rewritten around three rules, with every setting at the top of the file:
+  - ROUTE: the dashed line always travels Warsaw → Brussels → Indiana → Tokyo → Tbilisi → Warsaw and
+    never goes back. It leaves after `HOLD`, or earlier as soon as the city starts shrinking near the horizon.
+    One city marker at a time; cities scale with the globe like the tags.
+  - TAGS: appear only right after the line lands in a visible city; each topic at most once; never on top
+    of another marker.
+  - ONE GLITCH: cities and tags share one marker mechanism (`glitchIn` / `glitchOut`) and one CSS glitch
+    (`.is-in` / `.is-out` on the marker, `.glitch` + `data-text` on the label). The topic panel swap uses
+    the same 420 ms jitter. Removed the separate "burst" flicker and instant hides.
+- Buttons: one style for every button (`.btn`, `.btn-ghost`). The header "Hire me" is now a `.btn`;
+  `.hire-btn` and `.g-box-btn` only place the button.
+
 ## 2026-11-14 — Each topic tag at most once on the globe
 
 - `nextWord()` in `public/globe.js` skips any topic already on the globe (incl. tags still glitching out);
