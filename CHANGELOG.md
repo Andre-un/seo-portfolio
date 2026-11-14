@@ -17,6 +17,18 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-14 — Everything inside the visible window
+
+- New "window" in `public/globe.js` (`inWindow`): in front of the globe (z > 0.15), on screen, above the
+  bottom fade and not under the entry text. Cities and tags glitch in when they enter it and glitch out
+  when they leave it — nothing animates behind the globe.
+- The line now waits (no fixed time limit) until the next city is well inside the window (`READY_X`) and
+  the current one is still clearly in view (`LAUNCH_Z`); the "leave early when shrinking" rule is gone.
+- Brussels → Indiana (91°), Indiana → Tokyo (134°) and Tokyo → Tbilisi (95°) are wider than the ~67°
+  usable window, so they have no line: the city leaves the window, the next glitches in when it enters.
+  Warsaw → Brussels and Tbilisi → Warsaw fly with a line.
+
 ## 2026-11-14 — Globe simplified: fixed loop, one glitch, one button style
 
 - `public/globe.js` rewritten around three rules, with every setting at the top of the file:

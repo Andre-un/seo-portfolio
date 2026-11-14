@@ -2,10 +2,15 @@
 //
 // How it works, in one place:
 //  • The globe rotates; land is dots sampled from Natural Earth (world-atlas via jsDelivr).
-//  • ROUTE: a dashed line travels a fixed loop of cities and never goes back:
+//  • WINDOW: everything happens inside the part of the globe you can actually see
+//    (on screen, in front, above the bottom fade, not under the entry text). Markers
+//    glitch in when they enter the window and glitch out when they leave it.
+//  • ROUTE: a fixed loop of cities that never goes back:
 //      Warsaw → Brussels → Indiana → Tokyo → Tbilisi → Warsaw …
-//    Only one city marker is on the globe at a time. The line leaves when the city has been
-//    shown for HOLD ms, or earlier as soon as the city starts to shrink near the horizon.
+//    Only one city marker is shown at a time. The dashed line waits (however long it takes)
+//    until the next city is well inside the window, then flies — so you always see where it
+//    goes. If the next city is too far to share the window with the current one, there is
+//    no line: the current city leaves the window, and the next one glitches in when it enters.
 //  • TAGS (SEO, AEO, GEO, AI, B2B) appear only right after the line lands in a visible city,
 //    never twice at once, never on top of another marker. Hovering one slows the globe and
 //    swaps the entry panel to that topic (content: .g-topics in index.astro).
@@ -28,14 +33,17 @@
     { name: 'TOKYO', lon: 139.69, lat: 35.69 },
     { name: 'TBILISI', lon: 44.79, lat: 41.72 }
   ];
-  var HOLD = 1800, FLY = 1700, LAND = 650;   // ms: city shown, line flying, line tail retracting
+  var HOLD = 1800, FLY = 1700, LAND = 650;   // ms: minimum time a city is shown, line flying, tail retracting
   var SWITCH_AT = 0.82;            // fraction of the flight when the next city glitches in
   var GLITCH = 420;                // ms, must match the .is-in / .is-out animations in style.css
   var WORDS = ['SEO', 'AEO', 'GEO', 'AI', 'B2B', 'B2B'];   // B2B twice = twice as often
   var SPAWN_WINDOW = 1500;         // after a landing, keep looking this long for a free spot
   var GAP = 8;                     // px of free space kept around every marker
   var HORIZON = 0.06;              // z below this = behind the globe
-  var SHRINK_Z = HORIZON + 0.45 * 0.7;       // markers start shrinking below this z
+  var WINDOW_Z = 0.15;             // the visible window: in front of the globe by at least this…
+  var WINDOW_BOTTOM = 0.86;        // …above this fraction of the canvas height (the bottom fade)…
+  var READY_X = 0.1;               // …and a target counts as "well inside" right of this fraction of the width
+  var LAUNCH_Z = 0.3;              // the departing city must still be this far in front when the line leaves
 
   var css = getComputedStyle(document.documentElement);
   var INK = (css.getPropertyValue('--ink') || '#1a1a1a').trim();
@@ -76,6 +84,11 @@
     return out;
   }
   function markerScale(z) { return Math.max(0.3, Math.min(1, (z - HORIZON) / 0.45 + 0.3)); }
+  var panelRect = null;                              // entry text box (canvas coords), refreshed each frame
+  function inWindow(pt) {                            // is a projected point inside the visible window?
+    if (pt.z < WINDOW_Z || pt.x < 16 || pt.x > W - 16 || pt.y < 16 || pt.y > H * WINDOW_BOTTOM) return false;
+    return !(panelRect && pt.x > panelRect.l && pt.x < panelRect.r && pt.y > panelRect.t && pt.y < panelRect.b);
+  }
 
   function buildDots(land) {                         // rasterise land, then sample a dot grid
     var mw = 720, mh = 360, mask = null;
@@ -178,7 +191,8 @@
     placeLayer.appendChild(el);
     return { el: el, inner: el.firstChild, lon: c.lon * DEG, lat: c.lat * DEG, out: true, timer: 0, shown: false, blocked: false };
   });
-  function cityVisible(i) { project(cities[i].lon, cities[i].lat, q); return q.z > HORIZON; }
+  function cityVisible(i) { project(cities[i].lon, cities[i].lat, q); return inWindow(q); }
+  function cityReady(i) { return cityVisible(i) && q.x > W * READY_X; }       // well inside, not at the edge
   function setCityShown(i, on) {                     // the one city marker on the globe (or none)
     var c = cities[i];
     c.shown = on;
@@ -188,7 +202,7 @@
     cities.forEach(function (c, i) {
       if (c.el.style.display === 'none' && c.out) return;
       var pt = placeMarker(c);
-      if (!c.out && pt.z < HORIZON) glitchOut(c);                       // over the horizon
+      if (!c.out && !inWindow(pt)) glitchOut(c);                        // left the window
     });
     cities.forEach(function (c, i) {                                    // came back into view
       if (c.shown && c.out && !c.blocked && cityVisible(i) && c.el.style.display === 'none') { placeMarker(c); glitchIn(c); }
@@ -232,24 +246,25 @@
   function stepRoute(t) {
     var el = t - route.t0, cur = route.i, nxt = next(cur);
     if (route.phase === 'hold') {
+      if (el < HOLD || !cityReady(nxt)) return;                         // wait until the target is clearly visible
       project(cities[cur].lon, cities[cur].lat, q);
-      if (el > HOLD || q.z < SHRINK_Z) {                               // time's up, or the city is shrinking
+      if (inWindow(q) && q.z > LAUNCH_Z) {                              // both in view: fly the line
         route.phase = 'fly'; route.t0 = t; route.switched = false;
         route.arc = greatCircle(cities[cur], cities[nxt], ARC_N);
+      } else {                                                          // too far apart for one window: no line
+        setCityShown(cur, false); setCityShown(nxt, true);
+        route.i = nxt; route.t0 = t; landedAt = t;
       }
     } else if (route.phase === 'fly') {
       var f = ease(Math.min(1, el / FLY));
       drawArc(0, f, t);
       var head = arcPoint(f, { x: 0, y: 0, z: 0 });
-      if (head.z > 0) { ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(head.x, head.y, 2.4, 0, Math.PI * 2); ctx.fill(); }
+      ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(head.x, head.y, 2.4, 0, Math.PI * 2); ctx.fill();
       if (!route.switched && f >= SWITCH_AT) { route.switched = true; setCityShown(cur, false); setCityShown(nxt, true); }
       if (el >= FLY) { route.phase = 'land'; route.t0 = t; }
     } else {                                                            // land: the tail retracts into the city
       drawArc(ease(Math.min(1, el / LAND)), 1, t);
-      if (el >= LAND) {
-        route.i = nxt; route.phase = 'hold'; route.t0 = t; route.arc = null;
-        if (cityVisible(nxt)) landedAt = t;                             // a visible landing releases one tag
-      }
+      if (el >= LAND) { route.i = nxt; route.phase = 'hold'; route.t0 = t; route.arc = null; landedAt = t; }
     }
   }
 
@@ -327,7 +342,7 @@
     for (var tries = 0; tries < 600 && !spot; tries++) {   // near side of the arc: the longest ride
       var d = dots[(Math.random() * dots.length) | 0];
       project(d[0], d[1], p);
-      if (p.z < 0.5 || p.x < 24 || p.x > xMax || p.y < yMin || p.y > yMax) continue;
+      if (p.z < 0.5 || p.x < 24 || p.x > xMax || p.y < yMin || p.y > yMax || !inWindow(p)) continue;
       var fp = tagFootprint(p.x, p.y);
       if (!avoid.some(function (b) { return overlaps(fp, b); })) spot = d;
     }
@@ -363,8 +378,7 @@
       var pt = placeMarker(tag);
       if (tag.out) return;
       var held = tag.hover || tag.active;
-      if (!held && (pt.z < HORIZON || pt.x > W + 40 || pt.y > H + 40)) removeTag(tag);   // over the horizon
-      else if (!held && overlaps(tagFootprint(pt.x, pt.y), block)) removeTag(tag);       // drifted under the text
+      if (!held && (!inWindow(pt) || overlaps(tagFootprint(pt.x, pt.y), block))) removeTag(tag);   // left the window
     });
     resolveOverlaps();
   }
@@ -395,6 +409,7 @@
     speedFactor += (speedTarget - speedFactor) * Math.min(1, dt / (speedTarget > speedFactor ? 450 : 250));
     lambda0 += SPEED * speedFactor * dt / 1000;
     last = t;
+    panelRect = panelBox();
     drawGlobe(); stepRoute(t); updateCities(); updateTags(t);
     rafId = running ? requestAnimationFrame(frame) : 0;
   }
