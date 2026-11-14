@@ -14,6 +14,14 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-14 — Hero: two boxes, one button each
+
+- The homepage entry's two senses are now two boxes side by side (stacked on phones):
+  1. what Jędrzej does + 2× / 1,000+ / 40 → "Check my portfolio →" (work.html)
+  2. informal sense + "Available for new projects" + "Download my CV (PDF)" link → "Hire me →" (mailto)
+- Buttons sit at the bottom of each box and line up. Entry box widened to 35rem.
+
 ## 2026-11-13 — CV on the homepage
 
 - `public/downloads/jedrzej-szymula-cv.pdf` (English CV, 2 pages) linked from a "See my CV" button in the
