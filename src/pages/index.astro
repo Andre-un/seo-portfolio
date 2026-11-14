@@ -17,19 +17,26 @@ import Recommendations from '../components/Recommendations.astro';
       <p class="g-kicker">Entry № 001 · <em>noun</em></p>
       <h2 class="g-headword" id="g-headword">Jędrzej Szymula</h2>
       <p class="g-pron">/ˈjɛn.dʐɛj ʂɨˈmu.la/</p>
-      <ol class="g-senses">
-        <li>A content &amp; SEO specialist who makes brands findable — in Google, in AI answers, and across markets from Warsaw to the U.S.</li>
-        <li><span class="g-label">informal</span> The person you call when the blog has to grow 2× and the AI has to quote you.</li>
-      </ol>
-      <dl class="g-stats">
-        <div><dt>2×</dt><dd>Blog growth YoY</dd></div>
-        <div><dt>1,000+</dt><dd>TOP 3 keywords</dd></div>
-        <div><dt>40</dt><dd>AI citations</dd></div>
-      </dl>
-      <div class="g-actions">
-        <a href="work.html" class="btn">See the work</a>
-        <a href="mailto:j.szymula.seo@gmail.com" class="btn btn-ghost">Work with me</a>
-        <a href="downloads/jedrzej-szymula-cv.pdf" class="btn btn-ghost" target="_blank" rel="noopener">See my CV</a>
+      <div class="g-boxes">
+        <section class="g-box" aria-label="Portfolio">
+          <p class="g-box-num">1.</p>
+          <p class="g-box-text">A content &amp; SEO specialist who makes brands findable — in Google, in AI answers, and across markets from Warsaw to the U.S.</p>
+          <dl class="g-stats">
+            <div><dt>2×</dt><dd>Blog growth YoY</dd></div>
+            <div><dt>1,000+</dt><dd>TOP 3 keywords</dd></div>
+            <div><dt>40</dt><dd>AI citations</dd></div>
+          </dl>
+          <a href="work.html" class="btn btn-ghost g-box-btn">Check my portfolio →</a>
+        </section>
+        <section class="g-box g-box--hire" aria-label="Hire me">
+          <p class="g-box-num">2. <span class="g-label">informal</span></p>
+          <p class="g-box-text">The person you call when the blog has to grow 2× and the AI has to quote you.</p>
+          <p class="g-box-meta">
+            <span class="avail"><span class="avail-dot"></span>Available for new projects</span>
+            <a href="downloads/jedrzej-szymula-cv.pdf" class="g-cv" target="_blank" rel="noopener">Download my CV (PDF)</a>
+          </p>
+          <a href="mailto:j.szymula.seo@gmail.com" class="btn g-box-btn">Hire me →</a>
+        </section>
       </div>
     </article>
 
