@@ -15,6 +15,13 @@ Running history of changes made to this site, kept so future sessions have conte
 
 
 
+
+## 2026-11-14 — Each topic tag at most once on the globe
+
+- `nextWord()` in `public/globe.js` skips any topic already on the globe (incl. tags still glitching out);
+  if all five are shown, no new tag spawns until one leaves. B2B keeps its double weight in the deck.
+- Stress-tested with a tag every 0.4 s: 0 duplicate samples out of 500 (desktop + phone).
+
 ## 2026-11-14 — Hero: two boxes, one button each
 
 - The homepage entry's two senses are now two boxes side by side (stacked on phones):

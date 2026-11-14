@@ -290,11 +290,20 @@
   var LABEL_W = 70;
 
   function nextWord() {                     // shuffled deck so every topic gets its turn
-    if (!deck.length) {
-      deck = WORDS.slice();
-      for (var i = deck.length - 1; i > 0; i--) { var j = (Math.random() * (i + 1)) | 0, t = deck[i]; deck[i] = deck[j]; deck[j] = t; }
+    // Rule: a topic is never on the globe twice at the same time (glitching-out tags count too).
+    var onGlobe = {};
+    tags.forEach(function (t) { onGlobe[t.word] = true; });
+    for (var round = 0; round < 2; round++) {
+      if (!deck.length) {
+        deck = WORDS.slice();
+        for (var i = deck.length - 1; i > 0; i--) { var j = (Math.random() * (i + 1)) | 0, t = deck[i]; deck[i] = deck[j]; deck[j] = t; }
+      }
+      for (var k = deck.length - 1; k >= 0; k--) {
+        if (!onGlobe[deck[k]]) return deck.splice(k, 1)[0];
+      }
+      deck = [];                            // every word left in this deck is already shown: reshuffle once
     }
-    return deck.pop();
+    return null;                            // all topics are on the globe right now
   }
 
   function blockedRect() {                  // the entry panel, in canvas coordinates
@@ -355,6 +364,7 @@
     if (!tagLayer || !dots.length) return false;
     var d = pickAnchor(); if (!d) return false;
     var word = nextWord();
+    if (!word) return false;
 
     var el = document.createElement('div');
     el.className = 'gtag is-in';
